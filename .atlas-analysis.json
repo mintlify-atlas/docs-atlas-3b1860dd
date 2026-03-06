@@ -1,0 +1,78 @@
+{
+  "projectType": "frontend",
+  "projectName": "Pirson Dev Portfolio",
+  "projectDescription": "A modern, multilingual React portfolio website showcasing Francisco Cortés Pirson's web development skills, projects, education, and certificates.",
+  "theme": "palm",
+  "primaryColor": "#040404",
+  "lightColor": "#ffffff",
+  "darkColor": null,
+  "navigation": {
+    "groups": [
+      {
+        "group": "Overview",
+        "pages": [
+          "introduction",
+          "features",
+          "tech-stack"
+        ]
+      },
+      {
+        "group": "Getting Started",
+        "pages": [
+          "getting-started/installation",
+          "getting-started/configuration",
+          "getting-started/development"
+        ]
+      },
+      {
+        "group": "Components",
+        "pages": [
+          "components/overview",
+          "components/navbar",
+          "components/theme-switcher",
+          "components/language-switcher",
+          "components/timeline",
+          "components/floating-dock"
+        ]
+      },
+      {
+        "group": "Customization",
+        "pages": [
+          "customization/styling",
+          "customization/translations",
+          "customization/content"
+        ]
+      },
+      {
+        "group": "Deployment",
+        "pages": [
+          "deployment/build",
+          "deployment/vercel"
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Multilingual support (English, Spanish, French) with react-i18next",
+    "Dark/light theme switching with smooth transitions",
+    "Animated page transitions using Framer Motion",
+    "Responsive design with Tailwind CSS",
+    "Timeline component for education and experience",
+    "Interactive skill cards and certificate showcase",
+    "Custom UI components with Tabler Icons"
+  ],
+  "publicApiSurface": [
+    "App",
+    "Home",
+    "About",
+    "Projects",
+    "Contact",
+    "Navbar",
+    "ThemeSwitcher",
+    "LangSwitcher",
+    "Timeline",
+    "FloatingDock",
+    "LayoutTextFlip",
+    "Carousel"
+  ]
+}
