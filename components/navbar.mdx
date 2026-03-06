@@ -1,0 +1,152 @@
+---
+title: 'Navbar Component'
+description: 'Navigation bar with floating dock integration and i18n support'
+---
+
+# Navbar Component
+
+The Navbar component provides the main navigation interface for the portfolio. It integrates with the FloatingDock component to create a macOS-style navigation experience with route highlighting and internationalization support.
+
+## Features
+
+- Floating dock navigation with animated icons
+- Active route highlighting with custom colors
+- Integration with React Router for navigation
+- i18n support for multiple languages
+- Icon-based navigation using Tabler Icons
+- Smooth transition effects on hover and selection
+
+## Source Code Location
+
+```
+src/components/Navbar.jsx
+```
+
+## Dependencies
+
+```jsx
+import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { FloatingDock } from "./ui/FloatingDock";
+import {
+  IconHome,
+  IconUser,
+  IconDeviceDesktopCode,
+  IconAddressBook,
+} from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
+```
+
+## Usage
+
+```jsx
+import Navbar from './components/Navbar';
+
+function App() {
+  return (
+    <div className="fixed top-8 left-0 right-0 z-20 px-8">
+      <div className="absolute left-1/2 transform -translate-x-1/2 z-10">
+        <Navbar />
+      </div>
+    </div>
+  );
+}
+```
+
+## Implementation Details
+
+The Navbar component creates a navigation structure with four main sections:
+
+```jsx
+const links = [
+  { title: t("navbar.home"), icon: <IconHome />, href: "/" },
+  { title: t("navbar.about"), icon: <IconUser />, href: t("routes.about-me") },
+  { title: t("navbar.projects"), icon: <IconDeviceDesktopCode />, href: t("routes.projects") },
+  { title: t("navbar.contact"), icon: <IconAddressBook />, href: t("routes.contact") },
+];
+```
+
+## Component Structure
+
+The Navbar returns a centered container that wraps the FloatingDock component:
+
+```jsx
+return (
+  <div className="flex items-center justify-center h-20 w-full">
+    <FloatingDock
+      items={links.map((link) => ({
+        title: link.title,
+        icon: (
+          <div
+            className={`transition-colors duration-300 ${
+              location.pathname === link.href
+                ? "text-icon-select"
+                : "text-icon hover:text-icon-hover"
+            }`}
+          >
+            {link.icon}
+          </div>
+        ),
+        href: link.href,
+        onClick: () => navigate(link.href),
+      }))}
+    />
+  </div>
+);
+```
+
+## Route Highlighting
+
+The component automatically highlights the active route by comparing the current pathname with each link's href:
+
+- **Active route**: `text-icon-select` class is applied
+- **Inactive routes**: `text-icon hover:text-icon-hover` classes are applied
+- Smooth 300ms color transition between states
+
+## Navigation Items
+
+The navbar includes these navigation sections:
+
+<CardGroup cols={2}>
+  <Card title="Home" icon="home">
+    Links to the portfolio homepage
+  </Card>
+  <Card title="About" icon="user">
+    Links to the about/bio section
+  </Card>
+  <Card title="Projects" icon="code">
+    Links to the projects showcase
+  </Card>
+  <Card title="Contact" icon="address-book">
+    Links to the contact information
+  </Card>
+</CardGroup>
+
+## Internationalization
+
+The Navbar uses react-i18next for translations:
+
+- Navigation labels are translated: `t("navbar.home")`, `t("navbar.about")`, etc.
+- Routes are localized: `t("routes.about-me")`, `t("routes.projects")`, etc.
+- Language changes automatically update both labels and navigation paths
+
+## Styling
+
+The component uses Tailwind CSS with custom color tokens:
+
+- `text-icon`: Default icon color
+- `text-icon-hover`: Hover state color
+- `text-icon-select`: Selected/active route color
+- Icons use full width/height: `h-full w-full`
+
+## Integration with App
+
+In the main App component (src/App.jsx:45-46), the Navbar is positioned:
+
+```jsx
+<div className="absolute left-1/2 transform -translate-x-1/2 z-10">
+  <Navbar />
+</div>
+```
+
+This centers the navbar horizontally and positions it with appropriate z-index layering.

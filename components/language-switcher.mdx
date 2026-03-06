@@ -1,0 +1,304 @@
+---
+title: 'LanguageSwitcher Component'
+description: 'Multi-language selector with flag icons and route-aware navigation'
+---
+
+# LanguageSwitcher Component
+
+The LanguageSwitcher component provides a dropdown menu for switching between multiple languages (Spanish, English, French). It includes animated transitions, flag icons, and intelligent route translation when changing languages.
+
+## Features
+
+- Support for Spanish (ES), English (EN), and French (FR)
+- Animated dropdown with Framer Motion
+- Flag icons for visual language identification
+- Route-aware language switching (maintains equivalent page)
+- Hover and click interactions
+- Click-outside detection to close dropdown
+- Glassmorphism button design
+- Responsive flag scaling on hover
+
+## Source Code Location
+
+```
+src/components/LangSwitcher.jsx
+```
+
+## Dependencies
+
+```jsx
+import React, { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate, useLocation } from "react-router-dom";
+import { motion as Motion, AnimatePresence } from "framer-motion";
+
+import FlagES from "../../public/assets/flags/flag-es.svg";
+import FlagEN from "../../public/assets/flags/flag-en.svg";
+import FlagFR from "../../public/assets/flags/flag-fr.svg";
+```
+
+## Usage
+
+```jsx
+import LangSwitcher from './components/LangSwitcher';
+
+function App() {
+  return (
+    <div className="flex items-center gap-2">
+      <LangSwitcher />
+    </div>
+  );
+}
+```
+
+## Component State
+
+```jsx
+const { i18n } = useTranslation("global");
+const navigate = useNavigate();
+const location = useLocation();
+const [isOpen, setIsOpen] = useState(false);
+const ref = useRef(null);
+```
+
+## Supported Languages
+
+The component defines flag icons for three languages:
+
+```jsx
+const flags = {
+  es: (
+    <img
+      src={FlagES}
+      alt="Español"
+      className="w-5 h-5 hover:scale-110 transition-transform duration-200"
+    />
+  ),
+  en: (
+    <img
+      src={FlagEN}
+      alt="English"
+      className="w-5 h-5 hover:scale-110 transition-transform duration-200"
+    />
+  ),
+  fr: (
+    <img
+      src={FlagFR}
+      alt="Français"
+      className="w-5 h-5 hover:scale-110 transition-transform duration-200"
+    />
+  ),
+};
+```
+
+## Available Languages
+
+The dropdown shows all languages except the currently active one:
+
+```jsx
+const currentLang = i18n.language || "es";
+const availableLangs = Object.keys(flags).filter((l) => l !== currentLang);
+```
+
+## Language Change Handler
+
+The `handleChangeLang` function manages language switching with route translation:
+
+```jsx
+const handleChangeLang = (newLang) => {
+  const currentLang = i18n.language;
+  const currentPath = location.pathname;
+
+  const routesCurrent = i18n.getResourceBundle(currentLang, "global").routes;
+  const routesNew = i18n.getResourceBundle(newLang, "global").routes;
+
+  const matchingKey = Object.keys(routesCurrent).find(
+    (key) => routesCurrent[key] === currentPath,
+  );
+
+  i18n.changeLanguage(newLang);
+  setIsOpen(false);
+
+  if (matchingKey && routesNew[matchingKey]) {
+    navigate(routesNew[matchingKey]);
+  } else if (currentPath === "/") {
+    navigate("/");
+  } else {
+    navigate("/");
+  }
+};
+```
+
+### Language Change Flow
+
+1. Get current language and current route path
+2. Load route mappings for both current and new language
+3. Find the route key that matches the current path
+4. Change the i18n language
+5. Close the dropdown
+6. Navigate to the equivalent route in the new language
+7. If no equivalent route exists, navigate to home
+
+## Click-Outside Detection
+
+The component closes when clicking outside:
+
+```jsx
+useEffect(() => {
+  const handleClickOutside = (e) => {
+    if (ref.current && !ref.current.contains(e.target)) {
+      setIsOpen(false);
+    }
+  };
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, []);
+```
+
+## Component Structure
+
+```jsx
+<div
+  ref={ref}
+  className="relative inline-block text-left"
+  onMouseEnter={() => setIsOpen(true)}
+  onMouseLeave={() => setIsOpen(false)}
+>
+  {/* Main button */}
+  <button
+    onClick={() => setIsOpen((prev) => !prev)}
+    className="w-11 h-11 flex items-center justify-center rounded-xl shadow-card bg-white/0.1 backdrop-blur-xs border border-black/30 dark:border-white/20 transition-all duration-300"
+  >
+    {flags[currentLang]}
+  </button>
+
+  {/* Dropdown */}
+  <AnimatePresence>
+    {isOpen && (
+      <Motion.div
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -8 }}
+        transition={{ duration: 0.15 }}
+        className="absolute right-0 mt-2 w-11 rounded-xl shadow-card bg-white/0.1 backdrop-blur-xs border border-black/30 dark:border-white/20 transition-all duration-300 flex flex-col items-center py-2 z-50"
+      >
+        {availableLangs.map((lang) => (
+          <button
+            key={lang}
+            onClick={() => handleChangeLang(lang)}
+            className="w-8 h-8 flex items-center justify-center"
+          >
+            {flags[lang]}
+          </button>
+        ))}
+      </Motion.div>
+    )}
+  </AnimatePresence>
+</div>
+```
+
+## Interaction Triggers
+
+The dropdown can be opened in two ways:
+
+1. **Mouse hover**: `onMouseEnter={() => setIsOpen(true)}`
+2. **Click**: `onClick={() => setIsOpen((prev) => !prev)}`
+
+It closes on:
+
+1. **Mouse leave**: `onMouseLeave={() => setIsOpen(false)}`
+2. **Click outside**: Detected via ref and event listener
+3. **Language selection**: `setIsOpen(false)` in handler
+
+## Animation Properties
+
+<ParamField path="initial" type="object">
+  `{ opacity: 0, y: -8 }` - Dropdown starts hidden and slightly above
+</ParamField>
+
+<ParamField path="animate" type="object">
+  `{ opacity: 1, y: 0 }` - Fades in and moves to natural position
+</ParamField>
+
+<ParamField path="exit" type="object">
+  `{ opacity: 0, y: -8 }` - Fades out and moves up when closing
+</ParamField>
+
+<ParamField path="transition" type="object">
+  `{ duration: 0.15 }` - 150ms animation duration
+</ParamField>
+
+## Styling Classes
+
+### Main Button
+
+- `w-11 h-11`: Square 44px button (good touch target)
+- `rounded-xl`: Large border radius
+- `shadow-card`: Custom shadow token
+- `bg-white/0.1`: Semi-transparent background
+- `backdrop-blur-xs`: Glassmorphism effect
+- `border border-black/30 dark:border-white/20`: Adaptive borders
+
+### Dropdown Container
+
+- `absolute right-0 mt-2`: Positioned below button, aligned right
+- `w-11`: Same width as main button for alignment
+- `py-2`: Vertical padding for language options
+- `z-50`: High z-index to appear above other elements
+
+### Flag Icons
+
+- `w-5 h-5`: 20px square icons
+- `hover:scale-110`: 10% scale increase on hover
+- `transition-transform duration-200`: Smooth 200ms transform
+
+## Route Translation Example
+
+With i18n route configuration:
+
+```json
+// Spanish
+{
+  "routes": {
+    "about-me": "/sobre-mi",
+    "projects": "/proyectos",
+    "contact": "/contacto"
+  }
+}
+
+// English
+{
+  "routes": {
+    "about-me": "/about-me",
+    "projects": "/projects",
+    "contact": "/contact"
+  }
+}
+```
+
+When switching from Spanish to English while on `/sobre-mi`, the component:
+
+1. Finds that `"about-me": "/sobre-mi"` in Spanish routes
+2. Maps to `"about-me": "/about-me"` in English routes
+3. Navigates to `/about-me`
+
+## Integration with App
+
+In the main App component (src/App.jsx:50-52):
+
+```jsx
+<div className="flex items-center gap-2">
+  <ThemeSwitcher />
+  <LangSwitcher />
+</div>
+```
+
+Positioned in top-right corner alongside the theme switcher.
+
+## Flag Asset Requirements
+
+Ensure flag SVG files are available at:
+
+- `/public/assets/flags/flag-es.svg`
+- `/public/assets/flags/flag-en.svg`
+- `/public/assets/flags/flag-fr.svg`

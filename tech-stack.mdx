@@ -1,0 +1,555 @@
+---
+title: Tech Stack
+description: Complete technology stack used in the Pirson Dev Portfolio including React 19, Vite 7, Tailwind CSS 4, Framer Motion, and more
+---
+
+# Tech Stack
+
+The Pirson Dev Portfolio is built with modern, cutting-edge technologies that provide excellent performance, developer experience, and user engagement. Here's a comprehensive breakdown of the technology stack.
+
+## Core Framework
+
+<CardGroup cols={2}>
+  <Card title="React 19.2.0" icon="react">
+    Latest React version with concurrent features and improved performance
+  </Card>
+  <Card title="Vite 7.1.7" icon="bolt">
+    Next-generation build tool with lightning-fast HMR and optimized builds
+  </Card>
+</CardGroup>
+
+### React 19.2.0
+
+**The latest version of React** powers the entire application with cutting-edge features:
+
+```json
+{
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  }
+}
+```
+
+**Key Features Used:**
+- **Concurrent rendering** for smooth UI updates
+- **Automatic batching** for optimized state updates
+- **Improved hooks** with better performance characteristics
+- **Enhanced error handling** for better debugging
+
+<Info>
+  React 19 introduces significant performance improvements and new APIs that make the portfolio feel incredibly responsive.
+</Info>
+
+### Vite 7.1.7
+
+**Next-generation build tool** providing exceptional developer experience:
+
+```json
+{
+  "devDependencies": {
+    "vite": "^7.1.7",
+    "@vitejs/plugin-react": "^5.0.4"
+  }
+}
+```
+
+**Benefits:**
+- ⚡ **Instant server start** - No bundling required in development
+- 🔥 **Lightning-fast HMR** - Updates reflect instantly
+- 📦 **Optimized builds** - Rollup-based production bundling
+- 🎯 **Native ESM** - Leverages browser ES modules
+
+```javascript
+// vite.config.js
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [tailwindcss(), react()],
+})
+```
+
+<Tip>
+  Vite 7's ESM-based dev server starts in under 1 second, regardless of project size!
+</Tip>
+
+## Styling
+
+### Tailwind CSS 4.1.14
+
+**The latest Tailwind CSS v4** with Vite plugin integration:
+
+```json
+{
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.14",
+    "tailwindcss": "^4.1.14",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6"
+  }
+}
+```
+
+**Features:**
+- **Utility-first CSS** for rapid UI development
+- **JIT (Just-In-Time)** compilation for optimal performance
+- **Dark mode support** with class-based strategy
+- **Responsive design** with mobile-first breakpoints
+- **Custom color system** with CSS variables
+
+### Additional Styling Tools
+
+<Accordion title="Styling Utilities">
+  **tw-animate-css** (v1.4.0)
+  - Pre-built animation utilities for Tailwind
+  - Easy integration of complex animations
+  
+  **class-variance-authority** (v0.7.1)
+  - Type-safe component variants
+  - Conditional styling with TypeScript support
+  
+  **clsx** (v2.1.1)
+  - Conditional class name composition
+  - Clean syntax for dynamic classes
+  
+  **tailwind-merge** (v3.3.1)
+  - Intelligent Tailwind class merging
+  - Prevents class conflicts
+</Accordion>
+
+```typescript
+// Utility function combining clsx and tailwind-merge
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+```
+
+## Animation & Motion
+
+### Framer Motion 12.34.3
+
+**Powerful animation library** (using the `motion` package):
+
+```json
+{
+  "dependencies": {
+    "motion": "^12.34.3"
+  }
+}
+```
+
+**Used For:**
+- 🎬 **Page transitions** with spring physics
+- 🎯 **Interactive components** with gesture support
+- 📜 **Scroll animations** for timeline components
+- 🔄 **Layout animations** for smooth repositioning
+
+```javascript
+import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
+
+// Spring-based page transitions
+const pageVariants = {
+  initial: { opacity: 0, y: 20, filter: "blur(8px)" },
+  in: { opacity: 1, y: 0, filter: "blur(0px)" },
+  out: { opacity: 0, y: -20, filter: "blur(8px)" },
+};
+```
+
+<Info>
+  The portfolio uses Framer Motion's latest version (12.x) which includes improved performance and new animation capabilities.
+</Info>
+
+### React Transition Group 4.4.5
+
+**Additional transition utilities:**
+
+```json
+{
+  "dependencies": {
+    "react-transition-group": "^4.4.5"
+  }
+}
+```
+
+- Component-based transition management
+- CSS transition integration
+- Exit/enter lifecycle hooks
+
+## Routing
+
+### React Router DOM 7.9.3
+
+**Latest React Router v7** for client-side routing:
+
+```json
+{
+  "dependencies": {
+    "react-router-dom": "^7.9.3"
+  }
+}
+```
+
+**Implementation:**
+
+```javascript
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path={t("routes.about-me")} element={<About />} />
+        <Route path={t("routes.projects")} element={<Projects />} />
+        <Route path={t("routes.contact")} element={<Contact />} />
+      </Routes>
+    </Router>
+  );
+}
+```
+
+**Features:**
+- **Client-side routing** for instant navigation
+- **Nested routes** support
+- **Route transitions** with AnimatePresence integration
+- **Internationalized routes** with i18next
+
+<Note>
+  Routes are dynamically translated based on the selected language, providing a fully localized URL structure.
+</Note>
+
+## Internationalization
+
+### i18next 25.6.0
+
+**Comprehensive i18n solution:**
+
+```json
+{
+  "dependencies": {
+    "i18next": "^25.6.0",
+    "react-i18next": "^16.1.3"
+  }
+}
+```
+
+**Supported Languages:**
+- 🇬🇧 English (en)
+- 🇪🇸 Spanish (es)
+- 🇫🇷 French (fr)
+
+**Implementation Example:**
+
+```javascript
+import { useTranslation } from "react-i18next";
+
+function Component() {
+  const [t] = useTranslation("global");
+  
+  return (
+    <div>
+      <h1>{t("home.title")}</h1>
+      <p>{t("home.description")}</p>
+    </div>
+  );
+}
+```
+
+**Features:**
+- **Namespace support** for organized translations
+- **Lazy loading** of translation files
+- **Pluralization** and interpolation
+- **Route translation** for SEO-friendly URLs
+- **LocalStorage persistence** for language preference
+
+<Accordion title="Translation File Structure">
+  ```
+  src/locales/
+  ├── en/
+  │   └── global.json
+  ├── es/
+  │   └── global.json
+  └── fr/
+      └── global.json
+  ```
+  
+  Each language has its own directory with translation JSON files organized by namespace.
+</Accordion>
+
+## Icon Libraries
+
+Multiple icon libraries provide maximum flexibility:
+
+### Tabler Icons React 3.35.0
+
+**Primary icon library:**
+
+```json
+{
+  "dependencies": {
+    "@tabler/icons-react": "^3.35.0"
+  }
+}
+```
+
+```jsx
+import {
+  IconBrandGithub,
+  IconBrandLinkedin,
+  IconMail,
+  IconHome,
+  IconUser,
+} from "@tabler/icons-react";
+```
+
+- 🎨 Over 4,000+ icons
+- ⚡ Tree-shakeable imports
+- 🎯 Consistent design system
+- 📦 Small bundle size
+
+### Lucide React 0.544.0
+
+**Alternative icon set:**
+
+```json
+{
+  "dependencies": {
+    "lucide-react": "^0.544.0"
+  }
+}
+```
+
+- Modern, clean design
+- Actively maintained
+- TypeScript support
+- Customizable stroke width
+
+### React Icons 5.5.0
+
+**Community icon packs:**
+
+```json
+{
+  "dependencies": {
+    "react-icons": "^5.5.0"
+  }
+}
+```
+
+- Access to Font Awesome, Material Design, and more
+- Unified API across all icon sets
+- Over 50+ icon libraries
+
+## Theming
+
+### next-themes 0.4.6
+
+**Theme management solution:**
+
+```json
+{
+  "dependencies": {
+    "next-themes": "^0.4.6"
+  }
+}
+```
+
+**Features:**
+- 🌓 **System preference detection**
+- 💾 **LocalStorage persistence**
+- 🎨 **Multiple theme support**
+- ⚡ **Zero flash on load**
+- 🔄 **Smooth transitions**
+
+<Info>
+  Despite the "next-" prefix, this library works perfectly with any React application, not just Next.js projects.
+</Info>
+
+## Analytics
+
+### Vercel Analytics 1.5.0
+
+**Privacy-friendly analytics:**
+
+```json
+{
+  "dependencies": {
+    "@vercel/analytics": "^1.5.0"
+  }
+}
+```
+
+**Benefits:**
+- 📊 **Page view tracking**
+- ⚡ **Web Vitals monitoring**
+- 🔒 **Privacy-compliant** (no cookies)
+- 🎯 **Zero configuration** on Vercel
+- 📈 **Real-time insights**
+
+## Development Tools
+
+### TypeScript 19.1.16
+
+**Type definitions for React:**
+
+```json
+{
+  "devDependencies": {
+    "@types/react": "^19.1.16",
+    "@types/react-dom": "^19.1.9",
+    "tsconfig.json": "included"
+  }
+}
+```
+
+### ESLint 9.36.0
+
+**Linting and code quality:**
+
+```json
+{
+  "devDependencies": {
+    "eslint": "^9.36.0",
+    "@eslint/js": "^9.36.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.22",
+    "globals": "^16.4.0"
+  }
+}
+```
+
+**Configured Rules:**
+- React Hooks best practices
+- React Refresh HMR compatibility
+- Modern JavaScript standards
+- Custom project-specific rules
+
+<Tip>
+  Run `npm run lint` to check for code quality issues before committing.
+</Tip>
+
+## Build Configuration
+
+### Package Scripts
+
+```json
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "start": "vite"
+  }
+}
+```
+
+<CardGroup cols={2}>
+  <Card title="Development" icon="code">
+    `npm run dev` - Start dev server with HMR
+  </Card>
+  <Card title="Build" icon="hammer">
+    `npm run build` - Create optimized production build
+  </Card>
+  <Card title="Lint" icon="check">
+    `npm run lint` - Check code quality with ESLint
+  </Card>
+  <Card title="Preview" icon="eye">
+    `npm run preview` - Preview production build locally
+  </Card>
+</CardGroup>
+
+## Browser Support
+
+### baseline-browser-mapping 2.10.0
+
+**Modern browser targeting:**
+
+```json
+{
+  "devDependencies": {
+    "baseline-browser-mapping": "^2.10.0"
+  }
+}
+```
+
+The portfolio targets modern browsers with ES6+ support:
+
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
+
+<Note>
+  The build uses native ES modules and modern JavaScript features for optimal performance in current browsers.
+</Note>
+
+## Version Summary
+
+Here's a complete reference of all major dependencies:
+
+<Accordion title="Complete Dependency List">
+  **Core:**
+  - React: 19.2.0
+  - React DOM: 19.2.0
+  - Vite: 7.1.7
+  
+  **Styling:**
+  - Tailwind CSS: 4.1.14
+  - @tailwindcss/vite: 4.1.14
+  - PostCSS: 8.5.6
+  - Autoprefixer: 10.4.21
+  
+  **Animation:**
+  - motion: 12.34.3
+  - react-transition-group: 4.4.5
+  
+  **Routing:**
+  - react-router-dom: 7.9.3
+  
+  **Internationalization:**
+  - i18next: 25.6.0
+  - react-i18next: 16.1.3
+  
+  **Icons:**
+  - @tabler/icons-react: 3.35.0
+  - lucide-react: 0.544.0
+  - react-icons: 5.5.0
+  
+  **Utilities:**
+  - clsx: 2.1.1
+  - tailwind-merge: 3.3.1
+  - class-variance-authority: 0.7.1
+  
+  **Theming:**
+  - next-themes: 0.4.6
+  
+  **Analytics:**
+  - @vercel/analytics: 1.5.0
+</Accordion>
+
+## Why These Technologies?
+
+<CardGroup cols={2}>
+  <Card title="Performance" icon="gauge-high">
+    Vite 7 and React 19 provide industry-leading build times and runtime performance
+  </Card>
+  <Card title="Developer Experience" icon="code">
+    Hot module replacement, TypeScript support, and modern tooling make development a joy
+  </Card>
+  <Card title="User Experience" icon="user">
+    Smooth animations, instant page transitions, and responsive design create an engaging experience
+  </Card>
+  <Card title="Maintainability" icon="wrench">
+    Well-organized code, type safety, and modern patterns make the codebase easy to maintain
+  </Card>
+</CardGroup>
+
+<Tip>
+  All dependencies are kept up-to-date with the latest stable versions, ensuring security and access to the newest features.
+</Tip>

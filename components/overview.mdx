@@ -1,0 +1,73 @@
+---
+title: 'Components Overview'
+description: 'Overview of all UI components used in the Pirson Dev Portfolio'
+---
+
+# Components Overview
+
+The Pirson Dev Portfolio uses a collection of custom-built React components to create an interactive and modern user experience. All components are designed with dark mode support, smooth animations, and responsive layouts.
+
+## Navigation Components
+
+<CardGroup cols={2}>
+  <Card title="Navbar" icon="compass" href="/components/navbar">
+    A floating dock navigation component with animated icons and route highlighting
+  </Card>
+  <Card title="FloatingDock" icon="anchor" href="/components/floating-dock">
+    A macOS-style dock with magnetic hover effects and responsive mobile/desktop views
+  </Card>
+</CardGroup>
+
+## Theme & Language Components
+
+<CardGroup cols={2}>
+  <Card title="ThemeSwitcher" icon="sun" href="/components/theme-switcher">
+    Animated theme toggle with sun/moon icons and smooth dark mode transitions
+  </Card>
+  <Card title="LanguageSwitcher" icon="language" href="/components/language-switcher">
+    Multi-language selector with flag icons supporting ES, EN, and FR
+  </Card>
+</CardGroup>
+
+## Content Components
+
+<Card title="Timeline" icon="clock" href="/components/timeline">
+  Scroll-based timeline component with animated progress tracking for education and experience
+</Card>
+
+## Component Features
+
+All components in this portfolio share common characteristics:
+
+- **Framer Motion animations** for smooth transitions and interactions
+- **Dark mode support** with automatic theme detection
+- **Responsive design** optimized for mobile and desktop
+- **TypeScript/JSX** for type safety and developer experience
+- **Tailwind CSS** for consistent styling and theming
+- **i18n integration** for multi-language support
+
+## Installation
+
+These components use the following key dependencies:
+
+```bash
+npm install framer-motion react-router-dom react-i18next @tabler/icons-react
+```
+
+## Usage Pattern
+
+Most components follow this basic import and usage pattern:
+
+```jsx
+import ComponentName from './components/ComponentName';
+
+function App() {
+  return (
+    <div>
+      <ComponentName />
+    </div>
+  );
+}
+```
+
+For detailed props, examples, and implementation details, explore the individual component documentation pages.

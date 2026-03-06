@@ -1,0 +1,404 @@
+---
+title: 'Translations'
+description: 'Add multi-language support using i18next and manage translation files'
+---
+
+The Pirson Dev Portfolio uses **i18next** and **react-i18next** for internationalization, supporting multiple languages with automatic browser language detection.
+
+## i18next Configuration
+
+The i18n setup is initialized in `src/main.jsx` before the React app renders:
+
+```jsx src/main.jsx
+import i18next from 'i18next';
+import { I18nextProvider } from "react-i18next";
+
+import global_es from "./locales/es/global.json";
+import global_en from "./locales/en/global.json";
+import global_fr from "./locales/fr/global.json";
+
+// Detect browser language (first 2 characters)
+const browserLang = navigator.language.slice(0, 2);
+
+// Retrieve last selected language from localStorage
+const savedLang = localStorage.getItem("lang");
+
+let defaultLang;
+
+if (savedLang) {
+  defaultLang = savedLang;
+} else if (browserLang === "es" || browserLang === "en" || browserLang === "fr") {
+  defaultLang = browserLang;
+} else {
+  defaultLang = "es";
+}
+
+i18next.init({
+  interpolation: { escapeValue: false },
+  lng: defaultLang,
+  resources: {
+    es: { global: global_es },
+    en: { global: global_en },
+    fr: { global: global_fr },
+  }
+})
+
+// Save language changes to localStorage
+i18next.on("languageChanged", (lng) => {
+  localStorage.setItem("lang", lng);
+});
+```
+
+### Key Features
+
+- **Browser Language Detection**: Automatically detects user's browser language
+- **Persistent Selection**: Saves user's language choice in localStorage
+- **Fallback Language**: Defaults to Spanish ("es") if browser language isn't supported
+
+## Translation File Structure
+
+Translation files are organized in `src/locales/{language}/global.json`:
+
+```
+src/
+└── locales/
+    ├── en/
+    │   └── global.json
+    ├── es/
+    │   └── global.json
+    └── fr/
+        └── global.json
+```
+
+### Example Translation File
+
+```json src/locales/en/global.json
+{
+  "app": {
+    "name": "Pirson ",
+    "animated_titles": ["Dev", "Programmer", "Developer", "Full Stack"]
+  },
+  "navbar": {
+    "home": "Home",
+    "about": "About Me",
+    "projects": "Projects",
+    "contact": "Contact"
+  },
+  "home": {
+    "title": "Francisco Cortés Pirson",
+    "subtitle": "Full Stack Web Developer",
+    "description": "Always exploring new technologies and best practices to turn ideas into complete, functional, and high-performance web solutions.",
+    "copied": "Copied!",
+    "social": {
+      "github": "GitHub",
+      "linkedin": "LinkedIn",
+      "email": "Copy Email",
+      "whatsapp": "WhatsApp",
+      "cv": "Download CV"
+    }
+  },
+  "about": {
+    "title": "About Me",
+    "description_1": "I'm a junior web developer in constant learning, comfortable working in teams and taking on challenges that foster both personal and professional growth.",
+    "description_2": "I stand out for my leadership, adaptability, and ability to solve problems creatively and efficiently.",
+    "sections": {
+      "education": "Education",
+      "certificates": "Certificates",
+      "skills": "Skills"
+    },
+    "button_certificates_more": "Show more",
+    "button_certificates_less": "Show less"
+  },
+  "routes": {
+    "about-me": "/about-me",
+    "projects": "/projects",
+    "contact": "/contact"
+  }
+}
+```
+
+## Using Translations in Components
+
+Import and use the `useTranslation` hook from react-i18next:
+
+```jsx src/pages/Home.jsx
+import { useTranslation } from "react-i18next";
+
+const Home = () => {
+  const [t] = useTranslation("global");
+
+  return (
+    <div>
+      <h1>{t("home.title")}</h1>
+      <h2>{t("home.subtitle")}</h2>
+      <p>{t("home.description")}</p>
+    </div>
+  );
+};
+```
+
+### Accessing Nested Properties
+
+Use dot notation to access nested translation keys:
+
+```jsx
+{t("about.sections.education")}
+{t("home.social.github")}
+{t("navbar.projects")}
+```
+
+### Using Arrays
+
+Access array values with `returnObjects: true`:
+
+```jsx src/App.jsx
+<LayoutTextFlip
+  text={t("app.name")}
+  words={t("app.animated_titles", { returnObjects: true })}
+/>
+```
+
+### Dynamic Routes
+
+Translate route paths for localized URLs:
+
+```jsx src/App.jsx
+import { useTranslation } from "react-i18next";
+
+function AppContent() {
+  const [t] = useTranslation("global");
+  
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path={t("routes.about-me")} element={<About />} />
+      <Route path={t("routes.projects")} element={<Projects />} />
+      <Route path={t("routes.contact")} element={<Contact />} />
+    </Routes>
+  );
+}
+```
+
+This creates localized routes:
+- **English**: `/about-me`, `/projects`, `/contact`
+- **Spanish**: `/sobre-mi`, `/proyectos`, `/contacto`
+- **French**: `/a-propos`, `/projets`, `/contact`
+
+## Adding a New Language
+
+<Steps>
+  <Step title="Create Translation File">
+    Create a new folder and JSON file in `src/locales/`:
+    
+    ```bash
+    mkdir src/locales/de
+    touch src/locales/de/global.json
+    ```
+  </Step>
+
+  <Step title="Copy and Translate Content">
+    Copy the structure from an existing language file:
+    
+    ```json src/locales/de/global.json
+    {
+      "app": {
+        "name": "Pirson ",
+        "animated_titles": ["Dev", "Programmierer", "Entwickler", "Full Stack"]
+      },
+      "navbar": {
+        "home": "Startseite",
+        "about": "Über mich",
+        "projects": "Projekte",
+        "contact": "Kontakt"
+      },
+      "home": {
+        "title": "Francisco Cortés Pirson",
+        "subtitle": "Full Stack Webentwickler",
+        "description": "Immer auf der Suche nach neuen Technologien und Best Practices, um Ideen in vollständige, funktionale und leistungsstarke Weblösungen zu verwandeln.",
+        "copied": "Kopiert!"
+      }
+      // ... rest of translations
+    }
+    ```
+  </Step>
+
+  <Step title="Import in main.jsx">
+    Import the new translation file:
+    
+    ```jsx src/main.jsx
+    import global_de from "./locales/de/global.json";
+    ```
+  </Step>
+
+  <Step title="Add to i18next Resources">
+    Register the new language:
+    
+    ```jsx src/main.jsx
+    i18next.init({
+      interpolation: { escapeValue: false },
+      lng: defaultLang,
+      resources: {
+        es: { global: global_es },
+        en: { global: global_en },
+        fr: { global: global_fr },
+        de: { global: global_de }, // Add new language
+      }
+    })
+    ```
+  </Step>
+
+  <Step title="Update Language Detection">
+    Add the new language code to the detection logic:
+    
+    ```jsx src/main.jsx
+    if (savedLang) {
+      defaultLang = savedLang;
+    } else if (browserLang === "es" || browserLang === "en" || browserLang === "fr" || browserLang === "de") {
+      defaultLang = browserLang;
+    } else {
+      defaultLang = "es";
+    }
+    ```
+  </Step>
+
+  <Step title="Update Language Switcher">
+    Add the new language option to your language switcher component (if you have one).
+  </Step>
+</Steps>
+
+## Content with Embedded Data
+
+Some sections like education, certificates, and skills include both translatable text and static data:
+
+```json src/locales/en/global.json
+{
+  "about": {
+    "education": [
+      {
+        "year": "2025",
+        "title": "Full Stack Java, Spring Boot, React and SQL Bootcamp",
+        "school": "Esplai Formación",
+        "src": "/assets/img/logo-FE.png",
+        "alt": "Logo Esplai"
+      }
+    ],
+    "certificates": [
+      {
+        "title": "Microsoft Certified Azure AI Fundamentals",
+        "school": "Microsoft",
+        "date": "December 2025",
+        "src": "/assets/certificados/img/certificado_azure_ia_fundamentals.jpg"
+      }
+    ],
+    "skills": [
+      {
+        "category": "Frontend",
+        "subcategories": [
+          {
+            "title": "Languages",
+            "items": [
+              { "name": "HTML", "src": "/assets/svg/html.svg" },
+              { "name": "CSS", "src": "/assets/svg/css.svg" }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+<Note>
+  When translating these sections, keep the `src`, `alt`, and asset paths the same across all languages. Only translate the text content like `title`, `school`, `date`, and `category`.
+</Note>
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Consistent Key Structure">
+    Maintain the same key structure across all language files. If you add a new key in English, add it to all other languages:
+
+    ```json
+    // All language files should have the same keys
+    {
+      "home": {
+        "new_feature": "Translation text"
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Fallback Content">
+    Always provide a fallback language (usually English) for missing translations:
+
+    ```jsx
+    i18next.init({
+      fallbackLng: 'en',
+      // ... other config
+    })
+    ```
+  </Accordion>
+
+  <Accordion title="Use Descriptive Keys">
+    Make translation keys descriptive and organized by section:
+
+    ```json
+    {
+      "about": {
+        "sections": {
+          "education": "Education",
+          "certificates": "Certificates"
+        }
+      }
+    }
+    ```
+    
+    Avoid generic keys like `text1`, `label2`, etc.
+  </Accordion>
+
+  <Accordion title="Keep Formatting Consistent">
+    When translating, maintain consistent punctuation and formatting:
+
+    ```json
+    {
+      "button_certificates_more": "Show more",
+      "button_certificates_less": "Show less"
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Switching Languages Programmatically
+
+Change the current language using `i18next.changeLanguage()`:
+
+```jsx
+import { useTranslation } from "react-i18next";
+
+const LanguageSwitcher = () => {
+  const { i18n } = useTranslation();
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+
+  return (
+    <div>
+      <button onClick={() => changeLanguage('en')}>English</button>
+      <button onClick={() => changeLanguage('es')}>Español</button>
+      <button onClick={() => changeLanguage('fr')}>Français</button>
+    </div>
+  );
+};
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Content" icon="file-lines" href="/customization/content">
+    Learn how to update personal information and content
+  </Card>
+  <Card title="Styling" icon="palette" href="/customization/styling">
+    Customize colors, fonts, and visual styling
+  </Card>
+</CardGroup>

@@ -1,0 +1,471 @@
+---
+title: 'FloatingDock Component'
+description: 'macOS-style dock with magnetic hover effects and responsive mobile/desktop views'
+---
+
+# FloatingDock Component
+
+The FloatingDock component creates a macOS-style dock with magnetic hover effects. It provides both desktop and mobile implementations, with smooth animations and interactive icon scaling based on mouse proximity.
+
+## Features
+
+- macOS-style magnetic hover effect on desktop
+- Expandable menu for mobile devices
+- Smooth spring animations with Framer Motion
+- Icon scaling based on mouse distance
+- Tooltip labels on hover
+- Support for links and custom click handlers
+- Download attribute support
+- Glassmorphism design
+- Dark mode support
+
+## Source Code Location
+
+```
+src/components/ui/FloatingDock.tsx
+```
+
+## Dependencies
+
+```typescript
+import { cn } from "../../lib/utils";
+import React, { useRef, useState } from "react";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  AnimatePresence,
+  MotionValue,
+} from "framer-motion";
+import { IconLayoutNavbarExpand } from "@tabler/icons-react";
+```
+
+## Props
+
+<ParamField path="items" type="DockItem[]" required>
+  Array of items to display in the dock
+</ParamField>
+
+<ParamField path="desktopClassName" type="string">
+  Additional CSS classes for desktop dock
+</ParamField>
+
+<ParamField path="mobileClassName" type="string">
+  Additional CSS classes for mobile dock
+</ParamField>
+
+### DockItem Interface
+
+```typescript
+interface DockItem {
+  title: string;           // Label shown on hover
+  icon: React.ReactNode;   // Icon element to display
+  href?: string;           // Optional link URL
+  onClick?: () => void;    // Optional click handler
+  download?: boolean;      // Optional download attribute
+}
+```
+
+## Usage
+
+### Basic Example
+
+```jsx
+import { FloatingDock } from './components/ui/FloatingDock';
+import { IconHome, IconUser } from '@tabler/icons-react';
+
+const items = [
+  {
+    title: "Home",
+    icon: <IconHome className="h-full w-full" />,
+    href: "/",
+  },
+  {
+    title: "Profile",
+    icon: <IconUser className="h-full w-full" />,
+    onClick: () => console.log("Profile clicked"),
+  },
+];
+
+function Navigation() {
+  return <FloatingDock items={items} />;
+}
+```
+
+### Real-World Example from Navbar
+
+From src/components/Navbar.jsx:25-42:
+
+```jsx
+<FloatingDock
+  items={links.map((link) => ({
+    title: link.title,
+    icon: (
+      <div
+        className={`transition-colors duration-300 ${
+          location.pathname === link.href
+            ? "text-icon-select"
+            : "text-icon hover:text-icon-hover"
+        }`}
+      >
+        {link.icon}
+      </div>
+    ),
+    href: link.href,
+    onClick: () => navigate(link.href),
+  }))}
+/>
+```
+
+## Component Architecture
+
+The main component renders both desktop and mobile versions:
+
+```typescript
+export const FloatingDock = ({ items, desktopClassName, mobileClassName }) => {
+  return (
+    <>
+      <FloatingDockDesktop items={items} className={desktopClassName} />
+      <FloatingDockMobile items={items} className={mobileClassName} />
+    </>
+  );
+};
+```
+
+- Desktop version is visible on `md` breakpoint and above
+- Mobile version is visible below `md` breakpoint
+
+## Desktop Implementation
+
+### Mouse Tracking
+
+```typescript
+let mouseX = useMotionValue(Infinity);
+
+return (
+  <motion.div
+    onMouseMove={(e) => mouseX.set(e.pageX)}
+    onMouseLeave={() => mouseX.set(Infinity)}
+    className={cn(
+      "mx-auto hidden h-16 items-end gap-5 rounded-2xl px-4 pb-3 md:flex",
+      "bg-white/0.1 backdrop-blur-xs border border-black/30 dark:border-white/20",
+      className
+    )}
+  >
+    {items.map((item) => (
+      <IconContainer mouseX={mouseX} key={item.title} {...item} />
+    ))}
+  </motion.div>
+);
+```
+
+### Desktop Styling
+
+- `hidden md:flex`: Hidden on mobile, flex on desktop
+- `h-16`: 64px height
+- `items-end gap-5`: Icons aligned to bottom with 20px gap
+- `rounded-2xl px-4 pb-3`: Large border radius with padding
+- Glassmorphism: `bg-white/0.1 backdrop-blur-xs`
+
+## Icon Container (Desktop)
+
+The `IconContainer` component handles the magnetic hover effect:
+
+### Distance Calculation
+
+```typescript
+let ref = useRef<HTMLDivElement>(null);
+
+let distance = useTransform(mouseX, (val) => {
+  let bounds = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
+  return val - bounds.x - bounds.width / 2;
+});
+```
+
+Calculates distance from mouse to icon center.
+
+### Size Transforms
+
+```typescript
+let widthTransform = useTransform(distance, [-150, 0, 150], [40, 80, 40]);
+let heightTransform = useTransform(distance, [-150, 0, 150], [40, 80, 40]);
+
+let widthTransformIcon = useTransform(distance, [-150, 0, 150], [20, 40, 20]);
+let heightTransformIcon = useTransform(distance, [-150, 0, 150], [20, 40, 20]);
+```
+
+**Transform ranges:**
+- **Distance -150px**: Icon is 40x40px (far away)
+- **Distance 0px**: Icon is 80x80px (mouse directly over)
+- **Distance +150px**: Icon is 40x40px (far away)
+
+### Spring Animations
+
+```typescript
+let width = useSpring(widthTransform, { mass: 0.1, stiffness: 150, damping: 12 });
+let height = useSpring(heightTransform, { mass: 0.1, stiffness: 150, damping: 12 });
+
+let widthIcon = useSpring(widthTransformIcon, { mass: 0.1, stiffness: 150, damping: 12 });
+let heightIcon = useSpring(heightTransformIcon, { mass: 0.1, stiffness: 150, damping: 12 });
+```
+
+**Spring parameters:**
+- `mass: 0.1`: Light, responsive feel
+- `stiffness: 150`: Moderate spring tension
+- `damping: 12`: Smooth, controlled bounce
+
+### Icon Rendering
+
+```typescript
+return (
+  <a
+    href={href ?? "#"}
+    onClick={(e) => {
+      if (onClick) {
+        e.preventDefault();
+        onClick();
+      }
+    }}
+    download={download}
+  >
+    <motion.div
+      ref={ref}
+      style={{ width, height }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="relative flex aspect-square items-center justify-center rounded-full bg-gray-200 dark:bg-neutral-800 cursor-pointer"
+    >
+      {/* Tooltip */}
+      <AnimatePresence>
+        {hovered && (
+          <motion.div
+            initial={{ opacity: 0, y: -10, x: "-50%" }}
+            animate={{ opacity: 1, y: 0, x: "-50%" }}
+            exit={{ opacity: 0, y: -2, x: "-50%" }}
+            className="absolute top-20 left-1/2 w-fit rounded-md border border-gray-200 bg-gray-100 px-2 py-0.5 text-xs whitespace-pre text-neutral-700 dark:border-neutral-900 dark:bg-neutral-800 dark:text-white"
+          >
+            {title}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Icon */}
+      <motion.div style={{ width: widthIcon, height: heightIcon }} className="flex items-center justify-center">
+        {icon}
+      </motion.div>
+    </motion.div>
+  </a>
+);
+```
+
+## Tooltip Animation
+
+<ParamField path="initial" type="object">
+  `{ opacity: 0, y: -10, x: "-50%" }` - Hidden above icon
+</ParamField>
+
+<ParamField path="animate" type="object">
+  `{ opacity: 1, y: 0, x: "-50%" }` - Visible below icon, centered
+</ParamField>
+
+<ParamField path="exit" type="object">
+  `{ opacity: 0, y: -2, x: "-50%" }` - Fades out with slight upward movement
+</ParamField>
+
+## Mobile Implementation
+
+### Expandable Menu
+
+```typescript
+const [open, setOpen] = useState(false);
+
+return (
+  <div className={cn("relative block md:hidden", className)}>
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          layoutId="nav"
+          className="absolute inset-x-0 top-full mt-2 flex flex-col-reverse gap-2"
+        >
+          {items.map((item, idx) => (
+            <motion.div
+              key={item.title}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10, transition: { delay: idx * 0.05 } }}
+              transition={{ delay: (items.length - 1 - idx) * 0.05 }}
+            >
+              <a
+                href={item.href ?? "#"}
+                onClick={(e) => {
+                  if (item.onClick) {
+                    e.preventDefault();
+                    item.onClick();
+                    setOpen(false);
+                  }
+                }}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-50"
+                download={item.download}
+              >
+                <div className="h-4 w-4">{item.icon}</div>
+              </a>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
+    </AnimatePresence>
+
+    <button
+      onClick={() => setOpen(!open)}
+      className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-50"
+    >
+      <IconLayoutNavbarExpand className="h-5 w-5 text-neutral-500" />
+    </button>
+  </div>
+);
+```
+
+### Mobile Features
+
+- **Staggered animation**: Items animate in sequence with 50ms delays
+- **Reverse order**: Uses `flex-col-reverse` so items expand upward
+- **Auto-close**: Closes menu after item selection
+- **Compact design**: 40px circular buttons
+- **Toggle button**: Hamburger-style expand icon
+
+## Mobile Animation Timing
+
+**Opening:**
+```typescript
+transition={{ delay: (items.length - 1 - idx) * 0.05 }}
+```
+Last item appears first, then previous items in sequence.
+
+**Closing:**
+```typescript
+exit={{ opacity: 0, y: 10, transition: { delay: idx * 0.05 } }}
+```
+First item disappears first, creating reverse cascade.
+
+## Styling Comparison
+
+<CardGroup cols={2}>
+  <Card title="Desktop Dock">
+    - Horizontal layout
+    - Magnetic hover effect
+    - Icon scaling: 40-80px
+    - Glassmorphism background
+    - Hover tooltips
+  </Card>
+  <Card title="Mobile Menu">
+    - Vertical expandable
+    - No hover effects
+    - Fixed 40px icons
+    - Solid backgrounds
+    - Staggered animations
+  </Card>
+</CardGroup>
+
+## Link vs onClick Behavior
+
+The component intelligently handles both navigation patterns:
+
+```typescript
+<a
+  href={href ?? "#"}
+  onClick={(e) => {
+    if (onClick) {
+      e.preventDefault();  // Prevent default link behavior
+      onClick();           // Execute custom handler
+    }
+  }}
+>
+```
+
+- If `onClick` is provided: Prevents navigation, runs custom handler
+- If only `href` is provided: Normal link behavior
+- If both: `onClick` takes precedence
+
+## Download Support
+
+The `download` prop enables file downloads:
+
+```jsx
+const items = [
+  {
+    title: "Resume",
+    icon: <IconDownload />,
+    href: "/resume.pdf",
+    download: true,  // Triggers download instead of navigation
+  },
+];
+```
+
+## Utility Function Requirement
+
+The component uses a `cn` utility for class merging:
+
+```typescript
+import { cn } from "../../lib/utils";
+```
+
+Typical implementation:
+
+```typescript
+// lib/utils.ts
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+```
+
+## Performance Optimization
+
+The magnetic effect is highly optimized:
+
+1. **Motion values**: Framer Motion's `useMotionValue` updates without React re-renders
+2. **Transform hooks**: `useTransform` recalculates only when dependencies change
+3. **Spring animations**: Run on GPU via CSS transforms
+4. **Conditional rendering**: Mobile/desktop versions don't mount simultaneously
+
+## Accessibility Considerations
+
+**Current implementation:**
+- Uses semantic `<a>` tags for links
+- Keyboard accessible click handlers
+- Visible text labels in tooltips
+
+**Recommendations:**
+- Add `aria-label` to icon buttons
+- Add `role="navigation"` to dock container
+- Add `aria-expanded` to mobile toggle button
+- Ensure sufficient color contrast for icons
+
+## Customization Examples
+
+### Change Icon Size Range
+
+```typescript
+let widthTransform = useTransform(distance, [-150, 0, 150], [50, 100, 50]);
+let heightTransform = useTransform(distance, [-150, 0, 150], [50, 100, 50]);
+```
+
+### Adjust Hover Sensitivity
+
+```typescript
+// Wider range = more gradual scaling
+let widthTransform = useTransform(distance, [-250, 0, 250], [40, 80, 40]);
+```
+
+### Modify Spring Physics
+
+```typescript
+// Bouncier effect
+let width = useSpring(widthTransform, { mass: 0.2, stiffness: 200, damping: 8 });
+
+// Smoother, slower effect
+let width = useSpring(widthTransform, { mass: 0.3, stiffness: 100, damping: 20 });
+```

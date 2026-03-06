@@ -1,0 +1,142 @@
+---
+title: Introduction
+description: Welcome to the Pirson Dev Portfolio - A modern, multilingual React portfolio website showcasing projects and professional experience
+---
+
+# Introduction
+
+Welcome to the **Pirson Dev Portfolio** documentation. This is a modern, professional portfolio website built with React that showcases projects, skills, and professional experience in an engaging and interactive way.
+
+## What is Pirson Dev Portfolio?
+
+Pirson Dev Portfolio is a single-page application (SPA) built with React 19 and Vite that serves as a personal portfolio website. It features a clean, modern design with smooth animations, dark mode support, and full multilingual capabilities.
+
+<CardGroup cols={2}>
+  <Card title="Modern Tech Stack" icon="react">
+    Built with React 19, Vite 7, and Tailwind CSS 4 for optimal performance and developer experience
+  </Card>
+  <Card title="Multilingual Support" icon="language">
+    Full internationalization with i18next supporting English, Spanish, and French
+  </Card>
+  <Card title="Smooth Animations" icon="wand-magic-sparkles">
+    Powered by Framer Motion (motion v12) for fluid page transitions and interactive elements
+  </Card>
+  <Card title="Theme Switching" icon="circle-half-stroke">
+    Built-in dark/light mode with smooth transitions and localStorage persistence
+  </Card>
+</CardGroup>
+
+## Who is this for?
+
+This portfolio template is perfect for:
+
+- **Developers** looking to showcase their projects and skills
+- **Freelancers** who need a professional online presence
+- **Job seekers** wanting to stand out with an interactive portfolio
+- **Students** building their first portfolio website
+
+<Note>
+  The portfolio includes sections for Home, About, Projects, and Contact, making it easy to present your professional story.
+</Note>
+
+## Key Highlights
+
+### Professional Design
+
+The portfolio features a sophisticated violet-themed gradient background with glassmorphism effects. The design adapts seamlessly between light and dark modes, providing an optimal viewing experience in any environment.
+
+### Internationalization Ready
+
+With full i18next integration, the portfolio supports multiple languages out of the box:
+
+- **English** (en)
+- **Spanish** (es)  
+- **French** (fr)
+
+The language switcher includes beautiful flag icons and automatically translates routes and content.
+
+### Interactive Components
+
+The portfolio includes several custom UI components:
+
+- **Floating Dock Navigation** - A macOS-style dock with hover effects
+- **Timeline Component** - Perfect for displaying career history and education
+- **Text Flip Animation** - Eye-catching animated text rotations
+- **Project Carousel** - Showcase your work in an engaging way
+
+<Info>
+  All components are built with accessibility and performance in mind, using React 19's latest features.
+</Info>
+
+### Smooth Page Transitions
+
+Every page navigation includes smooth fade and blur animations powered by Framer Motion, creating a polished, app-like experience.
+
+```javascript
+const pageVariants = {
+  initial: { opacity: 0, y: 20, filter: "blur(8px)" },
+  in: { opacity: 1, y: 0, filter: "blur(0px)" },
+  out: { opacity: 0, y: -20, filter: "blur(8px)" },
+};
+```
+
+## Getting Started
+
+The portfolio is built as a standard Vite + React application. Here's how to get started:
+
+<CodeGroup>
+```bash npm
+npm install
+npm run dev
+```
+
+```bash yarn
+yarn install
+yarn dev
+```
+
+```bash pnpm
+pnpm install
+pnpm dev
+```
+</CodeGroup>
+
+The development server will start at `http://localhost:5173` with hot module replacement (HMR) enabled.
+
+<Tip>
+  The project uses Vite 7 for lightning-fast development builds and optimized production bundles.
+</Tip>
+
+## Project Structure
+
+The codebase is organized for maintainability and scalability:
+
+```
+src/
+├── components/      # Reusable UI components
+│   ├── ui/         # Core UI components (Timeline, FloatingDock, etc.)
+│   └── projects/   # Project-specific components
+├── pages/          # Route pages (Home, About, Projects, Contact)
+├── locales/        # i18next translation files (en, es, fr)
+├── lib/            # Utility functions
+└── utils/          # Helper utilities
+```
+
+## Analytics & Deployment
+
+The portfolio includes **Vercel Analytics** integration for tracking visitor insights and is optimized for deployment on Vercel with zero configuration.
+
+<Note>
+  A `vercel.json` configuration file is included for custom deployment settings.
+</Note>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Explore Features" icon="compass" href="/features">
+    Discover all the features and capabilities
+  </Card>
+  <Card title="Tech Stack" icon="layer-group" href="/tech-stack">
+    Learn about the technologies used
+  </Card>
+</CardGroup>

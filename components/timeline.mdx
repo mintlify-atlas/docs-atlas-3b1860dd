@@ -1,0 +1,322 @@
+---
+title: 'Timeline Component'
+description: 'Scroll-based animated timeline for displaying chronological content'
+---
+
+# Timeline Component
+
+The Timeline component displays chronological content with a scroll-based progress animation. It's perfect for showcasing education history, work experience, or any time-ordered information with an elegant vertical layout.
+
+## Features
+
+- Scroll-based progress animation
+- Animated gradient progress line
+- Responsive layout (mobile/desktop)
+- Sticky titles on desktop view
+- Smooth opacity transitions
+- TypeScript support
+- Framer Motion animations
+- Customizable content with React nodes
+
+## Source Code Location
+
+```
+src/components/ui/timeline.tsx
+```
+
+## Dependencies
+
+```typescript
+import {
+  useMotionValueEvent,
+  useScroll,
+  useTransform,
+  motion,
+} from "motion/react";
+import React, { useEffect, useRef, useState } from "react";
+```
+
+## Props
+
+<ParamField path="data" type="TimelineEntry[]" required>
+  Array of timeline entries to display
+</ParamField>
+
+### TimelineEntry Interface
+
+```typescript
+interface TimelineEntry {
+  title: string;        // The title/year/date for the entry
+  content: React.ReactNode;  // Any React content (JSX, components, etc.)
+}
+```
+
+## Usage
+
+### Basic Example
+
+```jsx
+import { Timeline } from './components/ui/timeline';
+
+const data = [
+  {
+    title: "2024",
+    content: (
+      <div>
+        <h2>Software Engineer</h2>
+        <p>Worked on amazing projects</p>
+      </div>
+    ),
+  },
+  {
+    title: "2023",
+    content: (
+      <div>
+        <h2>Junior Developer</h2>
+        <p>Started my career in web development</p>
+      </div>
+    ),
+  },
+];
+
+function Experience() {
+  return <Timeline data={data} />;
+}
+```
+
+### Real-World Example from About Page
+
+From src/pages/About.jsx:12-35:
+
+```jsx
+const formacion = t("about.education", { returnObjects: true }).map(
+  (item) => ({
+    title: item.year,
+    content: (
+      <div className="flex flex-row w-full gap-4 items-center">
+        <div className="flex-1 text-left">
+          <h2 className="text-lg font-semibold text-subtitle">
+            {item.title}
+          </h2>
+          <p className="text-sm font-normal text-text">{item.school}</p>
+        </div>
+        <div className="flex justify-end">
+          <div className="h-32 w-32 rounded-lg overflow-hidden drop-shadow-[0_0_25px_rgba(168,85,247,0.8)] dark:drop-shadow-[0_0_25px_rgba(168,85,247,0.3)] bg-white/0.1 dark:bg-white backdrop-blur-md">
+            <img
+              src={item.src}
+              alt={item.alt}
+              className="w-full h-full object-contain"
+            />
+          </div>
+        </div>
+      </div>
+    ),
+  }),
+);
+
+<Timeline data={formacion} />
+```
+
+## Component Implementation
+
+### State Management
+
+```typescript
+const ref = useRef<HTMLDivElement>(null);
+const containerRef = useRef<HTMLDivElement>(null);
+const [height, setHeight] = useState(0);
+```
+
+### Height Calculation
+
+The component calculates total height on mount:
+
+```typescript
+useEffect(() => {
+  if (ref.current) {
+    const rect = ref.current.getBoundingClientRect();
+    setHeight(rect.height);
+  }
+}, [ref]);
+```
+
+### Scroll Tracking
+
+```typescript
+const { scrollYProgress } = useScroll({
+  target: containerRef,
+  offset: ["start 10%", "end 50%"],
+});
+```
+
+**Scroll offset parameters:**
+- `"start 10%"`: Animation starts when timeline top reaches 10% of viewport
+- `"end 50%"`: Animation completes when timeline bottom reaches 50% of viewport
+
+### Transform Animations
+
+```typescript
+const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height]);
+const opacityTransform = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
+```
+
+- `heightTransform`: Progress line grows from 0 to full height
+- `opacityTransform`: Quick fade-in during first 10% of scroll
+
+## Layout Structure
+
+### Desktop Layout
+
+On desktop (md breakpoint and above):
+
+```jsx
+<div className="flex justify-start pt-10 md:pt-20 md:gap-10">
+  {/* Sticky title column */}
+  <div className="sticky flex flex-col md:flex-row z-40 items-center top-40 self-start max-w-xs lg:max-w-sm md:w-full">
+    <div className="h-10 absolute left-3 md:left-3 w-10 rounded-full bg-neutral-300 dark:bg-neutral-900 flex items-center justify-center">
+      <div className="h-4 w-4 rounded-full bg-neutral-100 dark:bg-neutral-600 border border-neutral-300 dark:border-neutral-900 p-2" />
+    </div>
+    <h3 className="hidden md:block text-xl md:pl-20 md:text-3xl font-bold text-neutral-500 dark:text-neutral-500">
+      {item.title}
+    </h3>
+  </div>
+
+  {/* Content column */}
+  <div className="relative pl-20 pr-4 md:pl-4 w-full">
+    {item.content}
+  </div>
+</div>
+```
+
+### Mobile Layout
+
+On mobile, the title appears above content:
+
+```jsx
+<h3 className="md:hidden block text-2xl mb-4 text-left font-bold text-neutral-500 dark:text-neutral-400">
+  {item.title}
+</h3>
+```
+
+## Progress Line
+
+The vertical progress line uses a gradient background with animated fill:
+
+```jsx
+<div
+  style={{ height: height + "px" }}
+  className="absolute md:left-8 left-8 top-0 overflow-hidden w-[2px] bg-[linear-gradient(to_bottom,var(--tw-gradient-stops))] from-transparent from-[0%] via-neutral-200 dark:via-neutral-700 to-transparent to-[99%] [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)]"
+>
+  <motion.div
+    style={{
+      height: heightTransform,
+      opacity: opacityTransform,
+    }}
+    className="absolute inset-x-0 top-0 w-[2px] bg-gradient-to-t from-purple-600 via-violet-300 to-transparent from-[0%] via-[10%] rounded-full"
+  />
+</div>
+```
+
+### Progress Line Features
+
+- **Width**: 2px thin line
+- **Base gradient**: Neutral colors that fade at top/bottom
+- **Mask**: Creates soft fade at edges
+- **Animated fill**: Purple-violet gradient that grows with scroll
+- **Position**: Absolute positioned at left edge
+
+## Timeline Nodes
+
+Each entry has a circular node:
+
+**Outer circle:**
+- 40px diameter (`h-10 w-10`)
+- `bg-neutral-300 dark:bg-neutral-900`
+
+**Inner circle:**
+- 16px diameter (`h-4 w-4`)
+- `bg-neutral-100 dark:bg-neutral-600`
+- Border matches outer circle color
+
+## Styling Classes
+
+### Container
+
+- `w-full font-sans md:px-10`: Full width with responsive padding
+- `max-w-7xl mx-auto pb-20`: Centered with max width and bottom spacing
+
+### Entry Spacing
+
+- `pt-10 md:pt-20`: Responsive top padding (40px mobile, 80px desktop)
+- `md:gap-10`: 40px gap between title and content on desktop
+
+### Title Positioning
+
+- `sticky top-40`: Sticks to viewport 160px from top while scrolling
+- `self-start`: Aligns to start of flex container
+- `z-40`: Ensures it appears above other content
+
+## Responsive Breakpoints
+
+<CardGroup cols={2}>
+  <Card title="Mobile (< 768px)">
+    - Title appears above content
+    - Narrower spacing
+    - Smaller font sizes
+  </Card>
+  <Card title="Desktop (≥ 768px)">
+    - Sticky title column
+    - Side-by-side layout
+    - Larger typography
+  </Card>
+</CardGroup>
+
+## Animation Performance
+
+The component uses Framer Motion's `useTransform` which:
+
+- Runs on the GPU for smooth 60fps animations
+- Only recalculates on scroll events
+- Efficiently updates CSS transform properties
+- No JavaScript animation loops
+
+## Usage in About Page
+
+From src/pages/About.jsx:116:
+
+```jsx
+<section className="relative w-full">
+  <h1 className="text-3xl md:text-4xl flex items-center justify-center gap-2 mb-8 text-title font-bold">
+    <IconBooks className="w-8 h-8 text-violet-500" />
+    {t("about.sections.education")}
+  </h1>
+  <Timeline data={formacion} />
+</section>
+```
+
+## Customization Tips
+
+### Change Progress Colors
+
+Modify the gradient in the motion.div:
+
+```jsx
+className="bg-gradient-to-t from-blue-600 via-cyan-300 to-transparent"
+```
+
+### Adjust Scroll Offset
+
+```typescript
+const { scrollYProgress } = useScroll({
+  target: containerRef,
+  offset: ["start 20%", "end 60%"],  // Custom offsets
+});
+```
+
+### Modify Node Appearance
+
+```jsx
+<div className="h-12 w-12 rounded-full bg-violet-500">  {/* Custom size/color */}
+  <div className="h-6 w-6 rounded-full bg-white" />
+</div>
+```

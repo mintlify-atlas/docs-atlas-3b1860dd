@@ -1,0 +1,211 @@
+---
+title: 'Configuration'
+description: 'Configure your development environment and project settings'
+icon: 'gear'
+---
+
+## Project Configuration Files
+
+The project uses several configuration files to manage different aspects of the build and development process.
+
+### Vite Configuration
+
+The `vite.config.js` file configures the Vite build tool:
+
+```javascript vite.config.js
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [tailwindcss(), react()],
+})
+```
+
+<Info>
+The Vite configuration uses two plugins:
+- **@tailwindcss/vite** - Integrates Tailwind CSS v4 with Vite
+- **@vitejs/plugin-react** - Enables Fast Refresh using Babel
+</Info>
+
+### TypeScript Configuration
+
+The `tsconfig.json` provides TypeScript and path alias configuration:
+
+```json tsconfig.json
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/": ["src/"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
+```
+
+<Note>
+The `@/` path alias allows you to import from the `src` directory using absolute paths instead of relative paths.
+</Note>
+
+**Example usage:**
+```javascript
+// Instead of: import { utils } from '../../../lib/utils'
+import { utils } from '@/lib/utils'
+```
+
+### Component Library Configuration
+
+The `components.json` file configures UI component libraries and aliases:
+
+```json components.json
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/index.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  },
+  "registries": {
+    "@animate-ui": "https://animate-ui.com/r/{name}.json",
+    "@aceternity": "https://ui.aceternity.com/registry/{name}.json",
+    "@react-bits": "https://reactbits.dev/r/{name}.json"
+  }
+}
+```
+
+<CardGroup cols={2}>
+  <Card title="Shadcn/ui Style" icon="palette">
+    Uses the "new-york" style variant
+  </Card>
+  <Card title="Icon Library" icon="icons">
+    Lucide React for consistent icons
+  </Card>
+  <Card title="Component Registries" icon="database">
+    Access to Animate UI, Aceternity, and React Bits
+  </Card>
+  <Card title="Path Aliases" icon="folder-tree">
+    Organized import paths for components and utilities
+  </Card>
+</CardGroup>
+
+### ESLint Configuration
+
+The `eslint.config.js` provides code quality and consistency rules:
+
+```javascript eslint.config.js
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig, globalIgnores } from 'eslint/config'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs['recommended-latest'],
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        ecmaFeatures: { jsx: true },
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+    },
+  },
+])
+```
+
+<Warning>
+The ESLint configuration enforces React Hooks rules and React Refresh compatibility for optimal HMR performance.
+</Warning>
+
+## Internationalization Setup
+
+The project supports multiple languages through i18next configuration in `src/main.jsx`:
+
+<Steps>
+  <Step title="Language Detection">
+    Automatically detects browser language from `navigator.language`
+  </Step>
+  
+  <Step title="Supported Languages">
+    Three languages are supported:
+    - Spanish (es) - default
+    - English (en)
+    - French (fr)
+  </Step>
+  
+  <Step title="Persistence">
+    Selected language is saved to `localStorage` for persistence across sessions
+  </Step>
+</Steps>
+
+### Language Files Location
+
+Translation files are located in:
+```
+src/locales/
+  ├── en/global.json
+  ├── es/global.json
+  └── fr/global.json
+```
+
+## Analytics Configuration
+
+The project integrates Vercel Analytics for tracking:
+
+```javascript
+import { Analytics } from "@vercel/analytics/react";
+
+// In your root component
+<Analytics />
+```
+
+<Info>
+No additional configuration is required for Vercel Analytics when deployed on Vercel.
+</Info>
+
+## Next Steps
+
+<Card title="Development" icon="code" href="/getting-started/development">
+  Start the development server and begin building
+</Card>

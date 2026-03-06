@@ -1,0 +1,229 @@
+---
+title: 'ThemeSwitcher Component'
+description: 'Animated theme toggle with dark mode support and localStorage persistence'
+---
+
+# ThemeSwitcher Component
+
+The ThemeSwitcher component provides an animated toggle button for switching between light and dark themes. It includes smooth transitions, localStorage persistence, and automatic detection of system preferences.
+
+## Features
+
+- Animated sun/moon icon transitions
+- Smooth theme switching with 500ms transitions
+- localStorage persistence across sessions
+- System preference detection on first load
+- Hover scale effects
+- Glassmorphism button design
+- Full dark mode support
+
+## Source Code Location
+
+```
+src/components/ThemeSwitcher.jsx
+```
+
+## Dependencies
+
+```jsx
+import React, { useEffect, useState } from "react";
+```
+
+## Usage
+
+```jsx
+import ThemeSwitcher from './components/ThemeSwitcher';
+
+function App() {
+  return (
+    <div className="flex items-center gap-2">
+      <ThemeSwitcher />
+    </div>
+  );
+}
+```
+
+## Component State
+
+The component manages a single state variable:
+
+```jsx
+const [isDark, setIsDark] = useState(false);
+```
+
+## Theme Initialization
+
+On component mount, the theme is initialized based on saved preferences or system settings:
+
+```jsx
+useEffect(() => {
+  const savedTheme = localStorage.getItem("theme");
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+  const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
+  document.documentElement.classList.toggle("dark", initialTheme === "dark");
+  setIsDark(initialTheme === "dark");
+}, []);
+```
+
+### Initialization Priority
+
+1. **localStorage**: If a theme is saved, use it
+2. **System preference**: If no saved theme, detect OS dark mode setting
+3. **Default**: Falls back to light mode if neither is available
+
+## Theme Toggle Handler
+
+The `handleToggle` function manages theme switching:
+
+```jsx
+const handleToggle = () => {
+  const newTheme = !isDark ? "dark" : "light";
+  const html = document.documentElement;
+
+  html.classList.add("theme-transition");
+  html.classList.toggle("dark", newTheme === "dark");
+  setTimeout(() => {
+    html.classList.remove("theme-transition");
+  }, 500);
+
+  localStorage.setItem("theme", newTheme);
+  setIsDark(!isDark);
+};
+```
+
+### Toggle Flow
+
+1. Determine new theme (opposite of current)
+2. Add transition class for smooth animation
+3. Toggle dark mode class on `<html>` element
+4. Remove transition class after 500ms
+5. Save preference to localStorage
+6. Update component state
+
+## Button Structure
+
+The button uses a glassmorphism design with overlapping icons:
+
+```jsx
+<button
+  onClick={handleToggle}
+  className="relative inline-flex cursor-pointer select-none items-center justify-center p-4 md:p-5 rounded-xl shadow-card bg-white/0.1 backdrop-blur-xs border border-black/30 dark:border-white/20 transition-colors duration-500"
+  aria-label="Cambiar tema"
+>
+  {/* Sun icon */}
+  {/* Moon icon */}
+</button>
+```
+
+## Icon Animation
+
+Both icons are absolutely positioned and toggle between visible/hidden states:
+
+### Sun Icon (Light Mode)
+
+```jsx
+<span
+  className={`absolute flex h-9 w-9 items-center justify-center rounded transition-all duration-300 ease-in-out ${
+    !isDark
+      ? "opacity-100 text-violet-800 dark:text-violet-400 hover:scale-125 hover:text-violet-900 dark:hover:text-violet-500"
+      : "opacity-0 scale-75 text-violet-500 dark:text-violet-200"
+  }`}
+>
+  <svg>{/* Sun icon SVG */}</svg>
+</span>
+```
+
+### Moon Icon (Dark Mode)
+
+```jsx
+<span
+  className={`absolute flex h-9 w-9 items-center justify-center rounded transition-all duration-300 ease-in-out ${
+    isDark
+      ? "opacity-100 text-violet-800 dark:text-violet-400 hover:scale-125 hover:text-violet-900 dark:hover:text-violet-500"
+      : "opacity-0 scale-75 text-violet-500 dark:text-violet-200"
+  }`}
+>
+  <svg>{/* Moon icon SVG */}</svg>
+</span>
+```
+
+## Animation Properties
+
+<ParamField path="opacity" type="string">
+  Transitions between `opacity-100` (visible) and `opacity-0` (hidden)
+</ParamField>
+
+<ParamField path="scale" type="string">
+  Inactive icon is scaled down to `scale-75`
+</ParamField>
+
+<ParamField path="hover:scale-125" type="string">
+  Active icon scales up on hover for interactive feedback
+</ParamField>
+
+<ParamField path="transition-all duration-300" type="string">
+  All property changes animate over 300ms with ease-in-out timing
+</ParamField>
+
+## Styling Classes
+
+### Button Container
+
+- `p-4 md:p-5`: Responsive padding (16px mobile, 20px desktop)
+- `rounded-xl`: Large border radius
+- `shadow-card`: Custom shadow token
+- `bg-white/0.1`: Semi-transparent white background
+- `backdrop-blur-xs`: Glassmorphism blur effect
+- `border border-black/30 dark:border-white/20`: Adaptive borders
+
+### Icon States
+
+- Active: `opacity-100`, full scale, violet colors
+- Inactive: `opacity-0`, `scale-75`, muted colors
+- Hover: `scale-125` for enhanced interaction
+
+## Accessibility
+
+The component includes an `aria-label` for screen readers:
+
+```jsx
+aria-label="Cambiar tema"
+```
+
+Consider localizing this label with i18n for multi-language support.
+
+## Integration with App
+
+In the main App component (src/App.jsx:50-52), the ThemeSwitcher is positioned:
+
+```jsx
+<div className="flex items-center gap-2">
+  <ThemeSwitcher />
+  <LangSwitcher />
+</div>
+```
+
+It appears in the top-right corner alongside the language switcher.
+
+## CSS Requirements
+
+For the transition effect to work, ensure your global CSS includes:
+
+```css
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition: colors 500ms !important;
+  transition-delay: 0 !important;
+}
+```
+
+## localStorage Key
+
+The component stores the theme preference using the key:
+
+```javascript
+localStorage.setItem("theme", "dark"); // or "light"
+```

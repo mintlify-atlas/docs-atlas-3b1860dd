@@ -1,0 +1,353 @@
+---
+title: Features
+description: Comprehensive overview of all features in the Pirson Dev Portfolio including multilingual support, animations, theming, and interactive components
+---
+
+# Features
+
+The Pirson Dev Portfolio is packed with modern features that create an engaging user experience. Here's a detailed look at what makes this portfolio stand out.
+
+## Multilingual Support
+
+Full internationalization powered by **i18next** and **react-i18next**, supporting three languages out of the box.
+
+<CardGroup cols={3}>
+  <Card title="English" icon="flag-usa">
+    Complete English translations
+  </Card>
+  <Card title="Spanish" icon="flag">
+    Full Spanish language support
+  </Card>
+  <Card title="French" icon="flag">
+    French translations included
+  </Card>
+</CardGroup>
+
+### Language Switcher Component
+
+The custom `LangSwitcher` component provides:
+
+- **Flag-based selection** with SVG flag icons
+- **Automatic route translation** when switching languages
+- **Hover dropdown menu** for quick language changes
+- **LocalStorage persistence** to remember user preferences
+- **Smooth animations** with Framer Motion
+
+```javascript
+const handleChangeLang = (newLang) => {
+  const currentLang = i18n.language;
+  const currentPath = location.pathname;
+  
+  // Get route bundles for both languages
+  const routesCurrent = i18n.getResourceBundle(currentLang, "global").routes;
+  const routesNew = i18n.getResourceBundle(newLang, "global").routes;
+  
+  // Find matching route key and navigate
+  const matchingKey = Object.keys(routesCurrent).find(
+    (key) => routesCurrent[key] === currentPath
+  );
+  
+  i18n.changeLanguage(newLang);
+  if (matchingKey && routesNew[matchingKey]) {
+    navigate(routesNew[matchingKey]);
+  }
+};
+```
+
+<Info>
+  The language switcher intelligently translates routes, so `/about-me` in English becomes `/sobre-mi` in Spanish.
+</Info>
+
+## Dark Mode & Theme Switching
+
+A sophisticated theme system with smooth transitions and system preference detection.
+
+### Theme Features
+
+<Accordion title="Theme System Details">
+  **ThemeSwitcher Component Features:**
+  
+  - **System preference detection** using `prefers-color-scheme` media query
+  - **LocalStorage persistence** to save user theme preference
+  - **Smooth transitions** with custom CSS transition classes
+  - **Animated icon toggle** with scale and opacity animations
+  - **Tailwind dark mode** integration for consistent styling
+  
+  The theme switcher automatically detects the user's system preference on first visit and respects their choice on subsequent visits.
+</Accordion>
+
+```javascript
+const handleToggle = () => {
+  const newTheme = !isDark ? "dark" : "light";
+  const html = document.documentElement;
+  
+  html.classList.add("theme-transition");
+  html.classList.toggle("dark", newTheme === "dark");
+  
+  setTimeout(() => {
+    html.classList.remove("theme-transition");
+  }, 500);
+  
+  localStorage.setItem("theme", newTheme);
+  setIsDark(!isDark);
+};
+```
+
+<Tip>
+  The theme transition applies a smooth 500ms animation to all color changes, preventing jarring switches.
+</Tip>
+
+## Smooth Page Transitions
+
+Every page navigation includes fluid animations powered by **Framer Motion (motion v12)**.
+
+### Animation System
+
+The portfolio implements a spring-based animation system for page transitions:
+
+```javascript
+const pageVariants = {
+  initial: { opacity: 0, y: 20, filter: "blur(8px)" },
+  in: { opacity: 1, y: 0, filter: "blur(0px)" },
+  out: { opacity: 0, y: -20, filter: "blur(8px)" },
+};
+
+const pageTransition = {
+  type: "spring",
+  stiffness: 80,
+  damping: 25,
+  duration: 0.1,
+};
+```
+
+<Note>
+  The `AnimatePresence` component with `mode="wait"` ensures the previous page fully exits before the new one enters.
+</Note>
+
+### Animation Features
+
+- **Fade in/out** with opacity transitions
+- **Vertical slide** with Y-axis transforms
+- **Blur effect** for depth perception
+- **Spring physics** for natural motion feel
+
+## Interactive UI Components
+
+The portfolio includes several custom UI components built for engagement and usability.
+
+### 1. Floating Dock Navigation
+
+A macOS-inspired dock navigation system:
+
+- **Icon-based navigation** using Tabler Icons
+- **Active state indication** with color changes
+- **Hover effects** for visual feedback
+- **Responsive design** adapts to mobile and desktop
+
+```jsx
+const links = [
+  { title: "Home", icon: <IconHome />, href: "/" },
+  { title: "About", icon: <IconUser />, href: "/about-me" },
+  { title: "Projects", icon: <IconDeviceDesktopCode />, href: "/projects" },
+  { title: "Contact", icon: <IconAddressBook />, href: "/contact" },
+];
+```
+
+### 2. Timeline Component
+
+A scroll-based timeline perfect for career history and education:
+
+- **Scroll-triggered animations** using Framer Motion's `useScroll`
+- **Progress indicator** that fills as you scroll
+- **Sticky titles** for easy reference
+- **Responsive layout** for mobile and desktop
+- **Gradient effects** with violet theming
+
+<Accordion title="Timeline Implementation">
+  The Timeline component uses advanced Framer Motion hooks:
+  
+  ```typescript
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start 10%", "end 50%"],
+  });
+  
+  const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height]);
+  const opacityTransform = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
+  ```
+  
+  This creates a smooth progress line that animates as the user scrolls through timeline entries.
+</Accordion>
+
+### 3. Layout Text Flip
+
+Animated text that cycles through multiple words:
+
+- **Word rotation** with smooth transitions
+- **Customizable word list** via i18next translations
+- **Automatic cycling** with configurable intervals
+- **Color animations** matching the theme
+
+Used in the header to display dynamic titles like "Developer", "Designer", "Creator".
+
+### 4. Social Icon Links
+
+Interactive social media icons with enhanced UX:
+
+- **Hover tooltips** showing the platform name
+- **Copy-to-clipboard** functionality for email
+- **Scale animations** on hover and tap
+- **Success feedback** when copying
+- **Download support** for CV/resume
+
+```jsx
+<SocialIcon
+  title="Email"
+  icon={<IconMail />}
+  copyText="franciscortesp@gmail.com"
+  copiedText="Copied!"
+/>
+```
+
+<Info>
+  The email icon includes smart clipboard functionality - clicking copies the email and shows a "Copied!" message.
+</Info>
+
+## Glassmorphism Design
+
+Modern glassmorphism effects throughout the UI:
+
+- **Backdrop blur** for depth and layering
+- **Semi-transparent backgrounds** with opacity control
+- **Border styling** with adaptive colors for light/dark modes
+- **Shadow effects** for elevation
+
+```css
+bg-white/0.1 backdrop-blur-xs border border-black/30 dark:border-white/20
+```
+
+## Responsive Design
+
+Fully responsive layout using **Tailwind CSS 4**:
+
+<CardGroup cols={2}>
+  <Card title="Mobile First" icon="mobile">
+    Optimized for mobile devices with touch-friendly interactions
+  </Card>
+  <Card title="Desktop Enhanced" icon="desktop">
+    Enhanced layouts and features for larger screens
+  </Card>
+</CardGroup>
+
+- **Breakpoint-based layouts** using Tailwind's responsive utilities
+- **Adaptive typography** with responsive text sizing
+- **Touch-optimized** interactions for mobile devices
+- **Grid layouts** that adapt to screen size
+
+## Performance Features
+
+### Vite 7 Build System
+
+- **Lightning-fast HMR** for instant development feedback
+- **Optimized production builds** with code splitting
+- **Modern ESM** for native browser support
+- **Asset optimization** for images and static files
+
+### React 19 Features
+
+- **Latest React features** for optimal performance
+- **Concurrent rendering** for smooth UI updates
+- **Automatic batching** for efficient state updates
+
+<Tip>
+  The portfolio uses Vite's ESM-based dev server for sub-second cold starts and instant module updates.
+</Tip>
+
+## Analytics Integration
+
+Built-in **Vercel Analytics** support:
+
+- **Page view tracking** automatically configured
+- **Performance monitoring** for Core Web Vitals
+- **Zero configuration** when deployed to Vercel
+- **Privacy-friendly** analytics without cookies
+
+```json
+{
+  "dependencies": {
+    "@vercel/analytics": "^1.5.0"
+  }
+}
+```
+
+## Developer Experience
+
+### ESLint Configuration
+
+Pre-configured ESLint with React-specific rules:
+
+- **React Hooks rules** to enforce best practices
+- **React Refresh plugin** for HMR compatibility
+- **Modern JavaScript** linting with latest standards
+
+### TypeScript Support
+
+Partial TypeScript integration:
+
+- **TypeScript UI components** for type safety
+- **JSX components** for flexibility
+- **Gradual adoption** path for full TypeScript migration
+
+<Note>
+  Components like `timeline.tsx` and `FloatingDock.tsx` are written in TypeScript, while page components use JSX for rapid development.
+</Note>
+
+## Utility Libraries
+
+### Class Management
+
+- **clsx** - Conditional class name composition
+- **tailwind-merge** - Intelligent Tailwind class merging
+- **class-variance-authority** - Variant-based component styling
+
+```typescript
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+```
+
+### Icon Libraries
+
+Multiple icon libraries for maximum flexibility:
+
+- **@tabler/icons-react** (v3.35.0) - Primary icon set
+- **lucide-react** (v0.544.0) - Alternative icons
+- **react-icons** (v5.5.0) - Community icon packs
+
+## Customization
+
+The portfolio is highly customizable:
+
+<Accordion title="Customization Options">
+  **Colors & Theming:**
+  - Modify Tailwind CSS configuration
+  - Update CSS custom properties for gradients
+  - Customize component color schemes
+  
+  **Content:**
+  - Edit translation files in `src/locales/`
+  - Update page components in `src/pages/`
+  - Add new routes to `App.jsx`
+  
+  **Components:**
+  - Extend UI components in `src/components/ui/`
+  - Create new components following existing patterns
+  - Integrate additional animation effects
+</Accordion>
+
+<Tip>
+  All color values use CSS custom properties, making theme customization straightforward without touching component code.
+</Tip>

@@ -1,0 +1,531 @@
+---
+title: 'Content'
+description: 'Update personal information, projects, certificates, and skills in your portfolio'
+---
+
+All portfolio content is managed through translation files, making it easy to update your information in multiple languages simultaneously.
+
+## Personal Information
+
+Your personal details are stored in the translation files under the `home` and `about` sections.
+
+### Name and Title
+
+Update your name and professional title:
+
+```json src/locales/en/global.json
+{
+  "app": {
+    "name": "Pirson ",
+    "animated_titles": ["Dev", "Programmer", "Developer", "Full Stack"]
+  },
+  "home": {
+    "title": "Francisco Cortés Pirson",
+    "subtitle": "Full Stack Web Developer",
+    "description": "Always exploring new technologies and best practices to turn ideas into complete, functional, and high-performance web solutions."
+  }
+}
+```
+
+<Note>
+  The `animated_titles` array rotates through different titles in the animated header. Add as many variations as you like!
+</Note>
+
+### About Me Section
+
+Update your bio and professional description:
+
+```json src/locales/en/global.json
+{
+  "about": {
+    "title": "About Me",
+    "description_1": "I'm a junior web developer in constant learning, comfortable working in teams and taking on challenges that foster both personal and professional growth.",
+    "description_2": "I stand out for my leadership, adaptability, and ability to solve problems creatively and efficiently."
+  }
+}
+```
+
+### Social Links
+
+Social links are defined in `src/pages/Home.jsx`:
+
+```jsx src/pages/Home.jsx
+const socialLinks = [
+  {
+    title: t("home.social.github"),
+    icon: <IconBrandGithub />,
+    href: "https://github.com/srpirson",
+  },
+  {
+    title: t("home.social.linkedin"),
+    icon: <IconBrandLinkedin />,
+    href: "https://www.linkedin.com/in/franciscocortespirson/",
+  },
+  {
+    title: t("home.social.email"),
+    icon: <IconMail />,
+    copyText: "franciscortesp@gmail.com",
+  },
+  {
+    title: t("home.social.whatsapp"),
+    icon: <IconBrandWhatsapp />,
+    href: "https://wa.me/34633586624",
+  },
+  {
+    title: t("home.social.cv"),
+    icon: <IconFileCv />,
+    href: "/assets/CV/CV-FranciscoCortesPirson.pdf",
+    download: true,
+  },
+];
+```
+
+Update the `href` values with your personal links. The labels come from translations:
+
+```json src/locales/en/global.json
+{
+  "home": {
+    "social": {
+      "github": "GitHub",
+      "linkedin": "LinkedIn",
+      "email": "Copy Email",
+      "whatsapp": "WhatsApp",
+      "cv": "Download CV"
+    }
+  }
+}
+```
+
+### Profile Image
+
+Replace the profile image in `src/pages/Home.jsx`:
+
+```jsx src/pages/Home.jsx
+<img
+  src="/assets/me-avatar.png"
+  alt="Me"
+  className="w-45 md:w-64 h-auto rounded-lg select-none pointer-events-none drop-shadow-[0_0_25px_rgba(168,85,247,0.9)] dark:drop-shadow-[0_0_25px_rgba(168,85,247,0.3)]"
+/>
+```
+
+Place your new image in the `public/assets/` directory and update the `src` path.
+
+## Education
+
+Education entries are defined as an array in the translation files:
+
+```json src/locales/en/global.json
+{
+  "about": {
+    "education": [
+      {
+        "year": "2025",
+        "title": "Full Stack Java, Spring Boot, React and SQL Bootcamp",
+        "school": "Esplai Formación",
+        "src": "/assets/img/logo-FE.png",
+        "alt": "Logo Esplai"
+      },
+      {
+        "year": "2023",
+        "title": "Higher Technician in Web Application Development",
+        "school": "MEDAC",
+        "src": "/assets/img/logo-Medac.png",
+        "alt": "Logo MEDAC"
+      },
+      {
+        "year": "2018",
+        "title": "Technician in Microcomputer Systems and Networks",
+        "school": "I.E.S Belén",
+        "src": "/assets/img/logo-Belen.png",
+        "alt": "Logo IES Belén"
+      }
+    ]
+  }
+}
+```
+
+<Steps>
+  <Step title="Add School Logo">
+    Place the school logo in `public/assets/img/`
+  </Step>
+
+  <Step title="Add Education Entry">
+    Add a new object to the `education` array with:
+    - `year`: Graduation year
+    - `title`: Degree or program name
+    - `school`: Institution name
+    - `src`: Path to school logo
+    - `alt`: Alt text for logo
+  </Step>
+
+  <Step title="Translate for All Languages">
+    Update the same entry in all language files (es, en, fr, etc.)
+  </Step>
+</Steps>
+
+## Certificates
+
+Certificates work similarly to education entries:
+
+```json src/locales/en/global.json
+{
+  "about": {
+    "certificates": [
+      {
+        "title": "Full Stack Java, Spring Boot, React and SQL Bootcamp",
+        "school": "Fundación Esplai",
+        "date": "December 2025",
+        "src": "/assets/certificados/img/certificado_bootcamp_fullstack_fundacion_esplai.jpg"
+      },
+      {
+        "title": "Microsoft Certified Azure AI Fundamentals",
+        "school": "Microsoft",
+        "date": "December 2025",
+        "src": "/assets/certificados/img/certificado_azure_ia_fundamentals.jpg"
+      }
+    ]
+  }
+}
+```
+
+### Adding a New Certificate
+
+<Steps>
+  <Step title="Add Certificate Image">
+    Place your certificate image in `public/assets/certificados/img/`
+  </Step>
+
+  <Step title="Add Certificate Entry">
+    Add to the `certificates` array:
+    ```json
+    {
+      "title": "Your Certification Name",
+      "school": "Issuing Organization",
+      "date": "Month Year",
+      "src": "/assets/certificados/img/your-certificate.jpg"
+    }
+    ```
+  </Step>
+
+  <Step title="Update All Languages">
+    Translate the `title`, `school`, and `date` fields for each language, keeping the `src` path the same.
+  </Step>
+</Steps>
+
+## Skills
+
+Skills are organized into categories and subcategories:
+
+```json src/locales/en/global.json
+{
+  "about": {
+    "skills": [
+      {
+        "category": "Frontend",
+        "subcategories": [
+          {
+            "title": "Languages",
+            "items": [
+              { "name": "HTML", "src": "/assets/svg/html.svg" },
+              { "name": "CSS", "src": "/assets/svg/css.svg" },
+              { "name": "JavaScript", "src": "/assets/svg/javascript.svg" },
+              { "name": "TypeScript", "src": "/assets/svg/typescript.svg" }
+            ]
+          },
+          {
+            "title": "Frameworks & Libraries",
+            "items": [
+              { "name": "React", "src": "/assets/svg/react.svg" },
+              { "name": "Tailwind CSS", "src": "/assets/svg/tailwind.svg" },
+              { "name": "Bootstrap", "src": "/assets/svg/bootstrap.svg" }
+            ]
+          }
+        ]
+      },
+      {
+        "category": "Backend",
+        "subcategories": [
+          {
+            "title": "Languages & Environments",
+            "items": [
+              { "name": "Node.js", "src": "/assets/svg/nodejs.svg" },
+              { "name": "PHP", "src": "/assets/svg/php.svg" },
+              { "name": "Java", "src": "/assets/svg/java.svg" }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### Adding a New Skill
+
+<Accordion title="Add to Existing Subcategory">
+  Add a new item to an existing subcategory:
+
+  ```json
+  {
+    "title": "Languages",
+    "items": [
+      { "name": "HTML", "src": "/assets/svg/html.svg" },
+      { "name": "Python", "src": "/assets/svg/python.svg" } // New skill
+    ]
+  }
+  ```
+
+  Place the skill icon (SVG or PNG) in `public/assets/svg/`
+</Accordion>
+
+<Accordion title="Add New Subcategory">
+  Add a new subcategory to a category:
+
+  ```json
+  {
+    "category": "Frontend",
+    "subcategories": [
+      {
+        "title": "Languages",
+        "items": [...]
+      },
+      {
+        "title": "Testing Tools", // New subcategory
+        "items": [
+          { "name": "Jest", "src": "/assets/svg/jest.svg" },
+          { "name": "Cypress", "src": "/assets/svg/cypress.svg" }
+        ]
+      }
+    ]
+  }
+  ```
+</Accordion>
+
+<Accordion title="Add New Category">
+  Add a completely new category:
+
+  ```json
+  {
+    "skills": [
+      {
+        "category": "Frontend",
+        "subcategories": [...]
+      },
+      {
+        "category": "DevOps", // New category
+        "subcategories": [
+          {
+            "title": "Containerization",
+            "items": [
+              { "name": "Docker", "src": "/assets/svg/docker.svg" },
+              { "name": "Kubernetes", "src": "/assets/svg/kubernetes.svg" }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  ```
+</Accordion>
+
+<Tip>
+  Technology icons can be found from:
+  - [Simple Icons](https://simpleicons.org/)
+  - [DevIcon](https://devicon.dev/)
+  - [Skill Icons](https://skillicons.dev/)
+</Tip>
+
+## Projects
+
+The Projects page structure is currently minimal in `src/pages/Projects.jsx`:
+
+```jsx src/pages/Projects.jsx
+import React from "react";
+import SwitchMode from "../components/SwitchTheme";
+import Carousel from "../components/projects/Carousel";
+
+const Projects = () => {
+  return (
+    <div className="container">
+      {/* Add your projects content here */}
+    </div>
+  );
+};
+
+export default Projects;
+```
+
+### Adding Projects
+
+You can extend the Projects page by following the same pattern as other sections:
+
+<Steps>
+  <Step title="Add Projects to Translation Files">
+    Create a projects section in your translation files:
+    ```json src/locales/en/global.json
+    {
+      "projects": {
+        "title": "My Projects",
+        "items": [
+          {
+            "name": "E-commerce Platform",
+            "description": "Full-stack online store with payment integration",
+            "technologies": ["React", "Node.js", "PostgreSQL"],
+            "image": "/assets/projects/ecommerce.jpg",
+            "github": "https://github.com/yourusername/project",
+            "live": "https://project-demo.com"
+          }
+        ]
+      }
+    }
+    ```
+  </Step>
+
+  <Step title="Create Project Component">
+    Create a component to display projects:
+    ```jsx src/components/ProjectCard.jsx
+    import { useTranslation } from "react-i18next";
+
+    const ProjectCard = ({ project }) => {
+      return (
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6">
+          <img src={project.image} alt={project.name} />
+          <h3>{project.name}</h3>
+          <p>{project.description}</p>
+          <div className="flex gap-2">
+            {project.technologies.map(tech => (
+              <span key={tech}>{tech}</span>
+            ))}
+          </div>
+        </div>
+      );
+    };
+    ```
+  </Step>
+
+  <Step title="Use in Projects Page">
+    Display projects in the Projects page:
+    ```jsx src/pages/Projects.jsx
+    import { useTranslation } from "react-i18next";
+    import ProjectCard from "../components/ProjectCard";
+
+    const Projects = () => {
+      const [t] = useTranslation("global");
+      const projects = t("projects.items", { returnObjects: true });
+
+      return (
+        <div className="container">
+          <h1>{t("projects.title")}</h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {projects.map((project, index) => (
+              <ProjectCard key={index} project={project} />
+            ))}
+          </div>
+        </div>
+      );
+    };
+    ```
+  </Step>
+</Steps>
+
+## Navigation and Routes
+
+Route paths are also translatable, allowing localized URLs:
+
+```json src/locales/en/global.json
+{
+  "routes": {
+    "about-me": "/about-me",
+    "projects": "/projects",
+    "contact": "/contact"
+  }
+}
+```
+
+```json src/locales/es/global.json
+{
+  "routes": {
+    "about-me": "/sobre-mi",
+    "projects": "/proyectos",
+    "contact": "/contacto"
+  }
+}
+```
+
+Navbar labels are also managed in translations:
+
+```json src/locales/en/global.json
+{
+  "navbar": {
+    "home": "Home",
+    "about": "About Me",
+    "projects": "Projects",
+    "contact": "Contact"
+  }
+}
+```
+
+## Assets Organization
+
+Organize your assets in the `public/` directory:
+
+```
+public/
+├── assets/
+│   ├── me-avatar.png              # Profile image
+│   ├── img/                       # School logos
+│   │   ├── logo-FE.png
+│   │   ├── logo-Medac.png
+│   │   └── logo-Belen.png
+│   ├── svg/                       # Technology icons
+│   │   ├── html.svg
+│   │   ├── css.svg
+│   │   ├── javascript.svg
+│   │   └── react.svg
+│   ├── certificados/
+│   │   └── img/                   # Certificate images
+│   │       ├── certificado_azure_fundamentals.jpg
+│   │       └── certificado_tailwind_css.jpg
+│   ├── projects/                  # Project screenshots
+│   │   └── project-name.jpg
+│   └── CV/                        # Downloadable CV
+│       └── CV-YourName.pdf
+```
+
+<Warning>
+  Keep file paths consistent across all translation files. Only the text content should be translated, not the asset paths.
+</Warning>
+
+## Content Update Workflow
+
+<Steps>
+  <Step title="Update English Version">
+    Start by updating content in `src/locales/en/global.json`
+  </Step>
+
+  <Step title="Update Other Languages">
+    Translate the same changes to `es/global.json`, `fr/global.json`, etc.
+  </Step>
+
+  <Step title="Add Assets">
+    Place any new images, icons, or files in the `public/assets/` directory
+  </Step>
+
+  <Step title="Test">
+    Run the dev server and test in all languages:
+    ```bash
+    npm run dev
+    ```
+  </Step>
+</Steps>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Styling" icon="palette" href="/customization/styling">
+    Customize colors, fonts, and visual appearance
+  </Card>
+  <Card title="Translations" icon="language" href="/customization/translations">
+    Learn more about i18next configuration
+  </Card>
+</CardGroup>

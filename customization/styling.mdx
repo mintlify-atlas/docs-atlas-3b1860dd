@@ -1,0 +1,289 @@
+---
+title: 'Styling'
+description: 'Customize the visual appearance of your portfolio with Tailwind CSS and custom theme variables'
+---
+
+The Pirson Dev Portfolio uses Tailwind CSS v4 with custom CSS variables for theming, making it easy to customize colors, animations, and styles throughout the application.
+
+## Tailwind CSS Setup
+
+The project uses **Tailwind CSS v4** with the Vite plugin for optimal performance:
+
+```json package.json
+{
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.14",
+    "tailwindcss": "^4.1.14"
+  }
+}
+```
+
+Tailwind is imported directly in your main CSS file using the `@import` directive:
+
+```css src/index.css
+@import "tailwindcss";
+```
+
+## Theme Variables
+
+The portfolio uses CSS custom properties defined in `src/index.css` for dynamic theming. Colors automatically adapt based on light/dark mode.
+
+### Color Variables
+
+```css src/index.css
+@theme {
+  /* Default (Light Mode) Colors */
+  --color-bg: var(--color-violet-100);
+  --color-bg-gradient: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(139, 92, 246, 0.85), transparent 90%);
+  --color-title: var(--color-violet-800);
+  --color-subtitle: var(--color-violet-600);
+  --color-text: var(--color-gray-700);
+  --color-text-secondary: var(--color-violet-900);
+
+  /* Navbar Colors */
+  --color-bg-icon: var(--color-gray-200);
+  --color-icon: var(--color-neutral-600);
+  --color-icon-hover: var(--color-violet-600);
+  --color-icon-select: var(--color-violet-700);
+
+  --color-bg-img: var(--color-violet-200);
+
+  /* Scrollbar */
+  --scrollbar-thumb: #b474c7;
+  --scrollbar-track: var(--color-violet-100);
+}
+```
+
+### Dark Mode Override
+
+Dark mode colors are defined using the `.dark` class:
+
+```css src/index.css
+.dark {
+  --color-bg: var(--color-neutral-950);
+  --color-bg-gradient: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(139, 92, 246, 0.25), transparent 90%);
+  --color-title: var(--color-violet-100);
+  --color-subtitle: var(--color-violet-200);
+  --color-text: var(--color-gray-300);
+  --color-text-secondary: var(--color-violet-400);
+
+  --color-bg-icon: var(--color-neutral-800);
+  --color-icon: var(--color-neutral-400);
+  --color-icon-hover: var(--color-violet-300);
+  --color-icon-select: var(--color-violet-400);
+
+  --color-bg-img: var(--color-neutral-950);
+
+  --scrollbar-thumb: #8c589c;
+  --scrollbar-track: var(--color-neutral-950);
+}
+```
+
+## Using Theme Variables in Components
+
+Reference CSS variables in your Tailwind classes using the `bg-`, `text-`, and `border-` prefixes:
+
+```jsx src/App.jsx
+<div className="min-h-screen w-full relative bg-bg transition-colors duration-500">
+  <div
+    className="fixed inset-0 z-0"
+    style={{
+      background: "var(--color-bg-gradient)",
+    }}
+  />
+</div>
+```
+
+```jsx src/pages/Home.jsx
+<h1 className="text-2xl md:text-4xl font-bold mb-4 text-title">
+  {t("home.title")}
+</h1>
+<span className="text-subtitle">{t("home.subtitle")}</span>
+<p className="text-sm text-text max-w-md mx-auto">
+  {t("home.description")}
+</p>
+```
+
+## Custom Animations
+
+### Theme Transitions
+
+Smooth transitions when switching between light and dark modes:
+
+```css src/index.css
+.theme-transition * {
+  transition:
+    background-color 1s ease-in-out,
+    color 1s ease,
+    border-color 1s ease,
+    fill 1s ease,
+    stroke 1s ease;
+}
+```
+
+### Scroll Animations
+
+The portfolio includes scroll-triggered animations using CSS `view-timeline`:
+
+```css src/index.css
+@keyframes slide-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(2vh);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .blur-animation {
+    view-timeline-name: --item-timeline;
+    view-timeline-axis: block;
+    animation: slide-fade-in both;
+    animation-timeline: --item-timeline;
+    animation-range: contain 0% contain 50%;
+  }
+}
+```
+
+Apply the animation class to elements:
+
+```jsx
+<div className="blur-animation">
+  {/* Your content */}
+</div>
+```
+
+### Page Transitions
+
+Page transitions are handled with Framer Motion:
+
+```jsx src/App.jsx
+const pageVariants = {
+  initial: { opacity: 0, y: 20, filter: "blur(8px)" },
+  in: { opacity: 1, y: 0, filter: "blur(0px)" },
+  out: { opacity: 0, y: -20, filter: "blur(8px)" },
+};
+
+const pageTransition = {
+  type: "spring",
+  stiffness: 80,
+  damping: 25,
+  duration: 0.1,
+};
+```
+
+## Custom Scrollbar
+
+The portfolio features a custom-styled scrollbar that adapts to your theme:
+
+```css src/index.css
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  transition: scrollbar-color 0.5s ease-in;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--scrollbar-thumb), #8c589c);
+  border-radius: 10px;
+  border: 2px solid var(--scrollbar-track);
+  transition: background 0.3s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #c986da, #a268b3);
+}
+```
+
+## Customizing Colors
+
+<Accordion title="How do I change the primary color scheme?">
+  To change from violet to another color (e.g., blue):
+
+  1. Update the light mode variables in `src/index.css`:
+  ```css
+  @theme {
+    --color-bg: var(--color-blue-100);
+    --color-title: var(--color-blue-800);
+    --color-subtitle: var(--color-blue-600);
+    --color-text-secondary: var(--color-blue-900);
+    /* Update other violet references to blue */
+  }
+  ```
+
+  2. Update the dark mode variables:
+  ```css
+  .dark {
+    --color-bg-gradient: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(59, 130, 246, 0.25), transparent 90%);
+    --color-title: var(--color-blue-100);
+    --color-subtitle: var(--color-blue-200);
+    /* Update other violet references to blue */
+  }
+  ```
+
+  3. Update scrollbar colors to match your new theme
+</Accordion>
+
+<Accordion title="Can I add custom fonts?">
+  Yes! The portfolio uses JetBrains Mono by default:
+
+  ```css src/index.css
+  body {
+    font-family: 'JetBrains Mono', monospace;
+  }
+  ```
+
+  To add a custom font:
+
+  1. Add the font import to `src/index.css` or your HTML:
+  ```css
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+  ```
+
+  2. Update the font-family:
+  ```css
+  body {
+    font-family: 'Inter', sans-serif;
+  }
+  ```
+</Accordion>
+
+<Accordion title="How do I modify the background gradient?">
+  The background gradient is defined in the `--color-bg-gradient` variable:
+
+  ```css
+  @theme {
+    --color-bg-gradient: radial-gradient(
+      ellipse 80% 60% at 50% 0%,
+      rgba(139, 92, 246, 0.85),
+      transparent 90%
+    );
+  }
+  ```
+
+  Customize it by:
+  - Changing the shape: `ellipse`, `circle`
+  - Adjusting dimensions: `80% 60%`
+  - Moving position: `at 50% 0%` (horizontal, vertical)
+  - Modifying colors and opacity: `rgba(139, 92, 246, 0.85)`
+  - Adjusting gradient stops: `transparent 90%`
+</Accordion>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Translations" icon="language" href="/customization/translations">
+    Learn how to add new languages and manage translations
+  </Card>
+  <Card title="Content" icon="file-lines" href="/customization/content">
+    Update personal information, projects, and certificates
+  </Card>
+</CardGroup>

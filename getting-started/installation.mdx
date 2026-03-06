@@ -1,0 +1,113 @@
+---
+title: 'Installation'
+description: 'Set up the Pirson Dev Portfolio project on your local machine'
+icon: 'download'
+---
+
+## Prerequisites
+
+Before installing the project, ensure you have the following installed on your system:
+
+<CardGroup cols={2}>
+  <Card title="Node.js" icon="node-js">
+    Version 18.x or higher recommended
+  </Card>
+  <Card title="Package Manager" icon="box">
+    npm, yarn, or pnpm
+  </Card>
+</CardGroup>
+
+<Note>
+This project uses Node.js version 24.13.1 in development. Any Node.js version 18+ should work.
+</Note>
+
+## Clone the Repository
+
+First, clone the repository to your local machine:
+
+<CodeGroup>
+```bash npm
+git clone https://github.com/yourusername/srpirson.git
+cd srpirson
+```
+
+```bash yarn
+git clone https://github.com/yourusername/srpirson.git
+cd srpirson
+```
+
+```bash pnpm
+git clone https://github.com/yourusername/srpirson.git
+cd srpirson
+```
+</CodeGroup>
+
+## Install Dependencies
+
+Install all required packages using your preferred package manager:
+
+<CodeGroup>
+```bash npm
+npm install
+```
+
+```bash yarn
+yarn install
+```
+
+```bash pnpm
+pnpm install
+```
+</CodeGroup>
+
+## Key Dependencies
+
+The project includes several important dependencies:
+
+### Core Framework
+- **React 19.2.0** - Latest React with modern features
+- **Vite 7.1.7** - Next-generation build tool with HMR
+- **React Router DOM 7.9.3** - Client-side routing
+
+### UI & Styling
+- **Tailwind CSS 4.1.14** - Utility-first CSS framework
+- **Motion 12.34.3** - Animation library for smooth transitions
+- **Lucide React** - Icon library
+- **next-themes** - Theme switching functionality
+
+### Internationalization
+- **i18next** - Internationalization framework
+- **react-i18next** - React bindings for i18next
+
+### Development Tools
+- **ESLint 9.36.0** - Code linting
+- **@vitejs/plugin-react** - Fast Refresh with Babel
+- **TypeScript support** - Type checking capabilities
+
+<Check>
+After installation completes, you should have a `node_modules` directory with all dependencies installed.
+</Check>
+
+## Verify Installation
+
+Verify that the installation was successful by checking the installed packages:
+
+<CodeGroup>
+```bash npm
+npm list --depth=0
+```
+
+```bash yarn
+yarn list --depth=0
+```
+
+```bash pnpm
+pnpm list --depth=0
+```
+</CodeGroup>
+
+## Next Steps
+
+<Card title="Configuration" icon="gear" href="/getting-started/configuration">
+  Learn how to configure environment variables and project settings
+</Card>

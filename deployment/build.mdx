@@ -1,0 +1,220 @@
+---
+title: 'Build Process'
+description: 'Build your portfolio application with Vite and optimize for production'
+---
+
+<Info>
+  **Prerequisites**:
+  - Node.js version 19 or higher
+  - Project dependencies installed via `npm install`
+</Info>
+
+The Pirson Dev Portfolio uses Vite 7 as its build tool, providing fast builds and optimized production bundles. The build process compiles React components, processes Tailwind CSS styles, and bundles all assets for deployment.
+
+## Build Configuration
+
+The project uses a minimal Vite configuration located in `vite.config.js`:
+
+```javascript vite.config.js
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [tailwindcss(), react()],
+})
+```
+
+This configuration enables:
+- **React Fast Refresh** via `@vitejs/plugin-react` for instant component updates
+- **Tailwind CSS v4** integration via `@tailwindcss/vite` for utility-first styling
+- **Automatic optimization** including code splitting, tree shaking, and minification
+
+## Building for Production
+
+<Steps>
+<Step title="Install dependencies">
+
+Ensure all project dependencies are installed:
+
+```bash
+npm install
+```
+
+This installs all packages defined in `package.json`, including:
+- React 19.2.0 with the latest features
+- Vite 7 for blazing-fast builds
+- Tailwind CSS 4 for styling
+- Motion library for animations
+- React Router DOM for navigation
+- i18next for internationalization (EN, ES, FR)
+
+</Step>
+
+<Step title="Run the build command">
+
+Execute the production build:
+
+```bash
+npm run build
+```
+
+This runs `vite build` which:
+1. Compiles all JSX/JS files into optimized JavaScript
+2. Processes and minifies CSS (including Tailwind utilities)
+3. Optimizes images and static assets from `/public`
+4. Generates production bundles with code splitting
+5. Creates a `dist/` directory with deployment-ready files
+
+</Step>
+
+<Step title="Verify the build output">
+
+The build creates a `dist/` folder containing:
+
+```
+dist/
+├── index.html          # Entry HTML file
+├── assets/
+│   ├── index-[hash].js # Main JavaScript bundle
+│   ├── index-[hash].css # Compiled CSS
+│   └── [assets]        # Optimized images and fonts
+└── public assets       # Static files from /public
+```
+
+<Note>
+File names include content hashes (e.g., `index-abc123.js`) for effective browser caching and cache busting on updates.
+</Note>
+
+</Step>
+</Steps>
+
+## Build Optimization Features
+
+Vite automatically applies several optimizations during the build:
+
+### Code Splitting
+Large dependencies are automatically split into separate chunks, reducing initial load time. React Router routes can be lazy-loaded for better performance.
+
+### Tree Shaking
+Unused code is automatically removed from the final bundle. Only the icons you import from `@tabler/icons-react` and `lucide-react` are included.
+
+### Minification
+JavaScript and CSS are minified using esbuild, significantly reducing file sizes while maintaining functionality.
+
+### Asset Optimization
+Images and other static assets are optimized and include content hashes for long-term caching.
+
+## Preview Build Locally
+
+Before deploying, preview the production build locally:
+
+<Steps>
+<Step title="Build the project">
+
+```bash
+npm run build
+```
+
+</Step>
+
+<Step title="Start the preview server">
+
+```bash
+npm run preview
+```
+
+This serves the `dist/` folder on `http://localhost:4173` using Vite's preview server.
+
+</Step>
+
+<Step title="Test the production build">
+
+Open `http://localhost:4173` in your browser and verify:
+- All pages load correctly
+- Navigation works (React Router)
+- Language switching functions (i18next with EN, ES, FR)
+- Theme toggle works (next-themes)
+- Animations render properly (motion)
+- Analytics tracking is active (@vercel/analytics)
+
+<Warning>
+The preview server is not designed for production use. It's solely for local verification before deploying.
+</Warning>
+
+</Step>
+</Steps>
+
+## Development vs Production
+
+| Feature | Development (`npm run dev`) | Production (`npm run build`) |
+|---------|----------------------------|-----------------------------|
+| **Speed** | Instant HMR updates | Optimized for runtime performance |
+| **Bundle size** | Unoptimized, larger | Minified, tree-shaken |
+| **Source maps** | Detailed for debugging | Minimal or excluded |
+| **Environment** | `development` mode | `production` mode |
+| **Hot reload** | Enabled | N/A |
+
+## Build Scripts Reference
+
+All available build-related scripts from `package.json`:
+
+```json
+{
+  "scripts": {
+    "dev": "vite",                  // Start development server
+    "build": "vite build",          // Build for production
+    "preview": "vite preview",      // Preview production build
+    "lint": "eslint ."              // Run ESLint on codebase
+  }
+}
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Build fails with module resolution errors">
+    This may indicate missing dependencies or version conflicts.
+    
+    **Solution:**
+    1. Delete `node_modules/` and `package-lock.json`
+    2. Run `npm install` to reinstall dependencies
+    3. Ensure Node.js version is 19 or higher: `node --version`
+  </Accordion>
+
+  <Accordion title="Build succeeds but site doesn't work in preview">
+    Check for environment-specific code that behaves differently in production.
+    
+    **Solution:**
+    1. Check browser console for JavaScript errors
+    2. Verify all imports use correct paths (case-sensitive)
+    3. Ensure `index.html` correctly references the build output
+    4. Check that all environment variables are set (if using any)
+  </Accordion>
+
+  <Accordion title="Build output is too large">
+    Large bundle sizes can impact load times.
+    
+    **Solution:**
+    1. Use dynamic imports for large dependencies
+    2. Analyze bundle with `vite-bundle-visualizer`
+    3. Ensure tree-shaking works by using ES modules imports
+    4. Consider lazy-loading routes with React Router
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+After building your application:
+
+<CardGroup cols={2}>
+
+<Card title="Deploy to Vercel" icon="rocket" href="/deployment/vercel">
+  Learn how to deploy your build to Vercel with automatic deployments.
+</Card>
+
+<Card title="Development Guide" icon="code" href="/getting-started/development">
+  Set up your local development environment.
+</Card>
+
+</CardGroup>

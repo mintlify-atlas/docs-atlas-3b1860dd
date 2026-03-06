@@ -1,0 +1,257 @@
+---
+title: 'Development'
+description: 'Run the development server and understand the project structure'
+icon: 'code'
+---
+
+## Starting the Development Server
+
+Run the development server with Hot Module Replacement (HMR):
+
+<CodeGroup>
+```bash npm
+npm run dev
+```
+
+```bash yarn
+yarn dev
+```
+
+```bash pnpm
+pnpm dev
+```
+</CodeGroup>
+
+The development server will start on `http://localhost:5173` by default.
+
+<Check>
+Vite's HMR provides instant feedback when you save changes to your files.
+</Check>
+
+## Available Scripts
+
+The project includes several npm scripts defined in `package.json`:
+
+| Script | Command | Description |
+|--------|---------|-------------|
+| `dev` | `vite` | Start development server with HMR |
+| `start` | `vite` | Alternative command to start dev server |
+| `build` | `vite build` | Build for production |
+| `preview` | `vite preview` | Preview production build locally |
+| `lint` | `eslint .` | Run ESLint on the entire codebase |
+
+### Building for Production
+
+Create an optimized production build:
+
+<CodeGroup>
+```bash npm
+npm run build
+```
+
+```bash yarn
+yarn build
+```
+
+```bash pnpm
+pnpm run build
+```
+</CodeGroup>
+
+The build output will be generated in the `dist/` directory.
+
+### Preview Production Build
+
+Test the production build locally:
+
+<CodeGroup>
+```bash npm
+npm run preview
+```
+
+```bash yarn
+yarn preview
+```
+
+```bash pnpm
+pnpm run preview
+```
+</CodeGroup>
+
+## Project Structure
+
+Understand the organization of the source code:
+
+```
+src/
+├── components/          # Reusable React components
+│   ├── projects/        # Project-specific components
+│   │   └── Carousel.jsx # Project carousel component
+│   ├── LangSwitcher.jsx # Language switcher component
+│   ├── Navbar.jsx       # Navigation bar
+│   ├── Scroll.jsx       # Scroll utilities
+│   ├── SwitchTheme.jsx  # Theme toggle switch
+│   └── ThemeSwitcher.jsx # Theme management
+│
+├── pages/               # Page components for routing
+│   ├── Home.jsx         # Landing page
+│   ├── About.jsx        # About page
+│   ├── Projects.jsx     # Projects showcase
+│   └── Contact.jsx      # Contact page
+│
+├── locales/             # Internationalization files
+│   ├── en/global.json   # English translations
+│   ├── es/global.json   # Spanish translations
+│   └── fr/global.json   # French translations
+│
+├── lib/                 # Utility functions and helpers
+│
+├── utils/               # Additional utilities
+│   └── startViewTransition.js # View transition utilities
+│
+├── App.jsx              # Main application component
+├── main.jsx             # Application entry point
+└── index.css            # Global styles and Tailwind directives
+```
+
+<Info>
+The project follows a feature-based structure with clear separation between components, pages, and utilities.
+</Info>
+
+## Hot Module Replacement (HMR)
+
+Vite provides Fast Refresh for React components:
+
+<Steps>
+  <Step title="Instant Updates">
+    Changes to React components are reflected immediately without full page reload
+  </Step>
+  
+  <Step title="State Preservation">
+    Component state is preserved during updates when possible
+  </Step>
+  
+  <Step title="Error Recovery">
+    Syntax errors show overlay with details, clearing automatically when fixed
+  </Step>
+</Steps>
+
+<Warning>
+If you export non-component values from a component file, Fast Refresh will perform a full reload for that module.
+</Warning>
+
+### Fast Refresh Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Single Component per File" icon="file">
+    Export only one component per file for optimal HMR
+  </Card>
+  <Card title="Named Exports" icon="signature">
+    Use named exports for components when possible
+  </Card>
+  <Card title="Hooks at Top Level" icon="arrows-up">
+    Keep hooks at the top level of components
+  </Card>
+  <Card title="Avoid Anonymous Functions" icon="function">
+    Use named function components for better debugging
+  </Card>
+</CardGroup>
+
+## Code Quality with ESLint
+
+Run linting to check code quality:
+
+<CodeGroup>
+```bash npm
+npm run lint
+```
+
+```bash yarn
+yarn lint
+```
+
+```bash pnpm
+pnpm run lint
+```
+</CodeGroup>
+
+### ESLint Rules
+
+The project enforces several important rules:
+
+- **React Hooks Rules** - Ensures hooks are used correctly
+- **React Refresh** - Validates Fast Refresh compatibility
+- **No Unused Variables** - With exception for uppercase/constant patterns
+- **ES2020+ Features** - Modern JavaScript syntax allowed
+
+<Note>
+ESLint runs on all `.js` and `.jsx` files, ignoring the `dist` directory.
+</Note>
+
+## Theme Development
+
+The project includes dark/light theme support using `next-themes`:
+
+```javascript
+import { ThemeProvider } from 'next-themes'
+
+// Wrap your app with ThemeProvider
+<ThemeProvider attribute="class" defaultTheme="system">
+  {children}
+</ThemeProvider>
+```
+
+### Theme Colors
+
+Tailwind is configured with neutral as the base color in `components.json`, using CSS variables for dynamic theme switching.
+
+## Internationalization Development
+
+Add or modify translations in the locale files:
+
+<Steps>
+  <Step title="Edit Translation Files">
+    Modify `src/locales/{lang}/global.json` files
+  </Step>
+  
+  <Step title="Use Translation Hook">
+    ```javascript
+    import { useTranslation } from 'react-i18next'
+    
+    const { t } = useTranslation('global')
+    const text = t('key.path')
+    ```
+  </Step>
+  
+  <Step title="Test Language Switching">
+    Use the LangSwitcher component to test different languages
+  </Step>
+</Steps>
+
+## Debugging Tips
+
+<CardGroup cols={2}>
+  <Card title="React DevTools" icon="react">
+    Install React DevTools browser extension for component inspection
+  </Card>
+  <Card title="Vite Network Access" icon="network-wired">
+    Use `--host` flag to access dev server from other devices
+  </Card>
+  <Card title="Clear Cache" icon="trash">
+    Delete `node_modules/.vite` to clear Vite's dependency cache
+  </Card>
+  <Card title="Source Maps" icon="map">
+    Vite provides source maps automatically in development mode
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Components" icon="cube" href="/components/overview">
+    Explore available UI components
+  </Card>
+  <Card title="Deployment" icon="rocket" href="/deployment/vercel">
+    Learn how to deploy your application
+  </Card>
+</CardGroup>
